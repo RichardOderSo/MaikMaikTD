@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://c3jotkn5x2q06"]
+
+[ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="1_pquxj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5ajho"]
+size = Vector3(100, 0.1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8n7cf"]
+albedo_texture = ExtResource("1_pquxj")
+heightmap_scale = 3.2
+uv1_scale = Vector3(10, 10, 10)
+uv1_offset = Vector3(2.5, 0, 0)
+uv1_triplanar_sharpness = 0.84089553
+
+[sub_resource type="BoxMesh" id="BoxMesh_s8bxr"]
+material = SubResource("StandardMaterial3D_8n7cf")
+size = Vector3(100, 0.1, 100)
+
+[node name="Platform" type="Node3D" unique_id=674573646]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=156544188]
+transform = Transform3D(1, 0, 0, 0, 0.58778507, 0.8090171, 0, -0.8090171, 0.58778507, 0, 22.154139, 49.24125)
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=1295425531]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1338810637]
+shape = SubResource("BoxShape3D_5ajho")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=330688770]
+mesh = SubResource("BoxMesh_s8bxr")
