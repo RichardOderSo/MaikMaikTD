@@ -19,7 +19,6 @@ size = Vector3(1, 0.2, 1)
 [node name="Tower" type="StaticBody3D" unique_id=1388623405]
 collision_layer = 2
 script = ExtResource("1_4yjk7")
-FiringRate = 60.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=833072993]
 mesh = SubResource("CylinderMesh_tpt2e")
@@ -36,3 +35,6 @@ shape = SubResource("BoxShape3D_xyfrd")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="FireDelay" type="Timer" parent="." unique_id=757115590]
+
+[node name="ProjectileSpawnPoint" type="Marker3D" parent="." unique_id=1030665613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4546621, 0)
