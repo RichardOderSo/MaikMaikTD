@@ -1,11 +1,20 @@
 [gd_scene format=3 uid="uid://tkenj63rl35b"]
 
 [ext_resource type="PackedScene" uid="uid://c3jotkn5x2q06" path="res://Scenes/Platform.tscn" id="1_iukft"]
+[ext_resource type="PackedScene" uid="uid://doowbeiaptsu8" path="res://Scenes/Tower.tscn" id="1_j5yw3"]
 [ext_resource type="PackedScene" uid="uid://dmq0wvwkr7orh" path="res://Scenes/Player.tscn" id="2_gl6un"]
 
 [node name="Game" type="Node3D" unique_id=655531404]
+
+[node name="Tower" parent="." unique_id=1388623405 instance=ExtResource("1_j5yw3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.454, 1, -5.428)
+Range = 10.0
 
 [node name="Platform" parent="." unique_id=674573646 instance=ExtResource("1_iukft")]
 
 [node name="Player" parent="." unique_id=1774643152 instance=ExtResource("2_gl6un")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Player2" parent="." unique_id=532005981 instance=ExtResource("2_gl6un")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.143692, 1, -5.326044)
+script = null

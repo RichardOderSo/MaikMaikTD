@@ -22,6 +22,7 @@ size = Vector3(100, 0.1, 100)
 transform = Transform3D(1, 0, 0, 0, 0.58778507, 0.8090171, 0, -0.8090171, 0.58778507, 0, 22.154139, 49.24125)
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1295425531]
+collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1338810637]
 shape = SubResource("BoxShape3D_5ajho")

@@ -53,24 +53,24 @@ public partial class Player : CharacterBody3D
 		MoveAndSlide();
 	}
 
-    public override void _Ready()
-    {
+	public override void _Ready()
+	{
 		_camera = GetNode<Camera3D>("Camera3D");
 		Input.MouseMode = Input.MouseModeEnum.Captured;
-    }
+	}
 
-    public override void _Input(InputEvent @event)
-    {
+	public override void _Input(InputEvent @event)
+	{
 
-        if (Input.IsActionJustPressed("ui_cancel"))
-        {
-            Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured
-                ? Input.MouseModeEnum.Visible
-                : Input.MouseModeEnum.Captured;
-            return; 
-        }
+		if (Input.IsActionJustPressed("ui_cancel"))
+		{
+			Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured
+				? Input.MouseModeEnum.Visible
+				: Input.MouseModeEnum.Captured;
+			return; 
+		}
 
-        if (Input.MouseMode != Input.MouseModeEnum.Captured) return;
+		if (Input.MouseMode != Input.MouseModeEnum.Captured) return;
 
 		if(@event is InputEventMouseMotion mm)
 		{
@@ -78,6 +78,6 @@ public partial class Player : CharacterBody3D
 			RotateY(-mm.Relative.X * MouseSensitivity);
 
 		}
-    }
+	}
 
 }
