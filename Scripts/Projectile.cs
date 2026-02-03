@@ -1,6 +1,5 @@
 using Godot;
 using System;
-
 public partial class Projectile : Area3D {
 	private uint _penetrations = 0;
 	private float _speed;
@@ -21,7 +20,6 @@ public partial class Projectile : Area3D {
 			this.QueueFree();
 			return;
 		}
-
 	}
 
 	private void OnPenetration() {

@@ -1,8 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-
-
 public partial class Tower : StaticBody3D
 {
 
@@ -46,8 +44,6 @@ public partial class Tower : StaticBody3D
 	private float _currentShortesDistance = float.PositiveInfinity;
 	private Node3D _currentClosest = null;
 
-	
-
 	private void UpdateRange() {
 		_targetingRange.Scale = new Vector3(_range, _range, _range);
 	}
@@ -58,7 +54,6 @@ public partial class Tower : StaticBody3D
 	private float CalculateDistance(Node3D body) {
 		return (this.GlobalPosition.DistanceTo(body.GlobalPosition));
 	}
-
 	private void CalculateClosest(){
 		float distance;
 		Node3D closest =  null;
@@ -84,7 +79,6 @@ public partial class Tower : StaticBody3D
 			_currentClosest = closest;
 		}
 	}
-
 	private void ShootClosest() {
 		if (_enemiesInRange.Count == 0) {
 			GD.Print("nothing in range");
@@ -104,7 +98,6 @@ public partial class Tower : StaticBody3D
 
 		AddChild(bullet);
 	}
-	
 	private void BodyEntered(Node3D body) {
 		if (_currentClosest == null) { _currentClosest = body;}
 		_enemiesInRange.AddLast(body);
