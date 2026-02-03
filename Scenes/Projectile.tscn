@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://b8ngsbkp627rg"]
+
+[ext_resource type="Script" uid="uid://cunrf4nkeur58" path="res://Scripts/Projectile.cs" id="1_k1cl8"]
+[ext_resource type="Texture2D" uid="uid://6yvcwyr7077m" path="res://Assets/kenney_prototype_texture/PNG/Red/texture_09.png" id="2_y0kec"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tri7"]
+albedo_color = Color(0.94972926, 0.00016114175, 0.789512, 1)
+albedo_texture = ExtResource("2_y0kec")
+uv1_scale = Vector3(5, 5, 5)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ds7j7"]
+material = SubResource("StandardMaterial3D_0tri7")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5i1ty"]
+
+[node name="Projectile" type="Area3D" unique_id=839857650]
+collision_mask = 4
+script = ExtResource("1_k1cl8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1128096221]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("SphereMesh_ds7j7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=69007241]
+transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 0, 0)
+shape = SubResource("SphereShape3D_5i1ty")

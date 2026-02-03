@@ -73,8 +73,7 @@ public partial class Player : CharacterBody3D {
             velocity.Z = Mathf.MoveToward(velocity.Z, 0, Speed);
         }
 
-        Velocity = velocity;
-        MoveAndSlide();
-
-    }
+		Velocity = velocity;
+		MoveAndSlide();
+	}
 }
