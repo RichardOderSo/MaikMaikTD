@@ -8,10 +8,12 @@
 
 [node name="Platform" parent="." unique_id=674573646 instance=ExtResource("1_iukft")]
 
-[node name="Player" parent="." unique_id=1774643152 node_paths=PackedStringArray("MonsterSpawnPoint") instance=ExtResource("2_gl6un")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="MonsterSpawn" parent="Platform" index="2" unique_id=1344979708 node_paths=PackedStringArray("MonsterSpawnPoint")]
 MonsterScene = ExtResource("3_j5yw3")
-MonsterSpawnPoint = NodePath("../Platform/MonsterSpawn/StaticBody3D/Spawn")
+MonsterSpawnPoint = NodePath("StaticBody3D/Spawn")
+
+[node name="Player" parent="." unique_id=1774643152 instance=ExtResource("2_gl6un")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [editable path="Platform"]
 [editable path="Platform/MonsterSpawn"]

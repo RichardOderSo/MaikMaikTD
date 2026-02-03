@@ -2,32 +2,19 @@ using Godot;
 
 public partial class Player : CharacterBody3D {
 
-    // =====================
     // Movement
-    // =====================
     [Export(PropertyHint.Range, "0, 10, 0.1")]
     public float Speed = 5.0f;
 
     [Export]
     public float JumpVelocity = 4.5f;
 
-    // =====================
     // Mouse look
-    // =====================
     [Export]
     public float MouseSensitivity = 0.002f;
 
     private Camera3D _camera;
     private float _pitch = 0f;
-
-    // =====================
-    // Spawning
-    // =====================
-    [Export] public PackedScene MonsterScene;
-    [Export] public Node3D MonsterSpawnPoint;
-    [Export] public float _spawnSpacing = 1.5f;
-
-    private int _spawnCount = 0;
 
     public override void _Ready()
     {
@@ -46,12 +33,6 @@ public partial class Player : CharacterBody3D {
                     ? Input.MouseModeEnum.Visible
                     : Input.MouseModeEnum.Captured;
             return;
-        }
-
-        // Debug spawn
-        if (Input.IsActionJustPressed("debug_spawn"))
-        {
-            SpawnMonster();
         }
 
         if (Input.MouseMode != Input.MouseModeEnum.Captured)
@@ -95,36 +76,5 @@ public partial class Player : CharacterBody3D {
         Velocity = velocity;
         MoveAndSlide();
 
-    }
-
-
-    private async void SpawnMonster()
-    {
-        if (MonsterSpawnPoint == null)
-        {
-            GD.PrintErr("MonsterSpawnPoint not set!");
-            return;
-        }
-
-        if (MonsterScene == null)
-        {
-            GD.PrintErr("MonsterScene not set!");
-            return;
-        }
-
-        Node3D monster = MonsterScene.Instantiate<Node3D>();
-
-        Vector3 basePos = MonsterSpawnPoint.GlobalPosition;
-        Vector3 right = MonsterSpawnPoint.GlobalTransform.Basis.X.Normalized();
-        Vector3 offset = right * (_spawnCount * _spawnSpacing);
-        Vector3 targetPos = basePos + offset;
-
-        // Transform preparation
-        var t = monster.Transform;
-        t.Origin = targetPos;
-        monster.Transform = t;
-
-        GetTree().CurrentScene.AddChild(monster);
-        _spawnCount++;
     }
 }

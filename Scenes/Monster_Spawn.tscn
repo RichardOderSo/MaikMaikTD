@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cd1griojc04wh"]
 
 [ext_resource type="Texture2D" uid="uid://6yvcwyr7077m" path="res://Assets/kenney_prototype_texture/PNG/Red/texture_09.png" id="1_df0h3"]
+[ext_resource type="Script" uid="uid://dicsyjpyeq35e" path="res://Scripts/MonsterSpawn.cs" id="1_k1byp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1byp"]
 albedo_texture = ExtResource("1_df0h3")
@@ -11,6 +12,7 @@ material = SubResource("StandardMaterial3D_k1byp")
 [sub_resource type="BoxShape3D" id="BoxShape3D_trgon"]
 
 [node name="MonsterSpawn" type="Node3D" unique_id=1344979708]
+script = ExtResource("1_k1byp")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=275815664]
 
