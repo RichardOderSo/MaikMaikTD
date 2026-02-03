@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c3jotkn5x2q06"]
 
 [ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="1_pquxj"]
-[ext_resource type="PackedScene" uid="uid://cd1griojc04wh" path="res://Scenes/Spawner.tscn" id="2_8n7cf"]
+[ext_resource type="PackedScene" uid="uid://cd1griojc04wh" path="res://Scenes/World/Spawner.tscn" id="2_8n7cf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ajho"]
 size = Vector3(100, 0.1, 100)

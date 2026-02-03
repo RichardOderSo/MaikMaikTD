@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b8ngsbkp627rg"]
 
-[ext_resource type="Script" uid="uid://cunrf4nkeur58" path="res://Scripts/Projectile.cs" id="1_k1cl8"]
+[ext_resource type="Script" uid="uid://cunrf4nkeur58" path="res://Scripts/Entities/Projectile.cs" id="1_k1cl8"]
 [ext_resource type="Texture2D" uid="uid://6yvcwyr7077m" path="res://Assets/kenney_prototype_texture/PNG/Red/texture_09.png" id="2_y0kec"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tri7"]

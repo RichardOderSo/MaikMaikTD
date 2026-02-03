@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://doowbeiaptsu8"]
 
-[ext_resource type="Script" uid="uid://dpv08vp5npyef" path="res://Scripts/Tower.cs" id="1_4yjk7"]
+[ext_resource type="Script" uid="uid://dpv08vp5npyef" path="res://Scripts/Entities/Tower.cs" id="1_4yjk7"]
 [ext_resource type="Texture2D" uid="uid://baa7xtjfrdcat" path="res://Assets/kenney_prototype_texture/Vector/texture_09.svg" id="1_ry8d0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4yjk7"]

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="MaikMaikTD"
-run/main_scene="uid://tkenj63rl35b"
+run/main_scene="uid://cvmpmrtkue510"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
