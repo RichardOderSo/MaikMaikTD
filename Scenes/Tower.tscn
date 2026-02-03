@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://doowbeiaptsu8"]
+
+[ext_resource type="Script" uid="uid://dpv08vp5npyef" path="res://Scripts/Tower_shoot.cs" id="1_4yjk7"]
+[ext_resource type="Texture2D" uid="uid://baa7xtjfrdcat" path="res://Assets/kenney_prototype_texture/Vector/texture_09.svg" id="1_ry8d0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4yjk7"]
+albedo_color = Color(0.97059494, 0.97059506, 3.85046e-06, 1)
+albedo_texture = ExtResource("1_ry8d0")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tpt2e"]
+material = SubResource("StandardMaterial3D_4yjk7")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_tpt2e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xyfrd"]
+size = Vector3(1, 0.2, 1)
+
+[node name="Tower" type="StaticBody3D" unique_id=1388623405]
+collision_layer = 2
+script = ExtResource("1_4yjk7")
+Range = 15.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=833072993]
+mesh = SubResource("CylinderMesh_tpt2e")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=83038042]
+shape = SubResource("CylinderShape3D_tpt2e")
+
+[node name="Targeting_range" type="Area3D" parent="." unique_id=919143604]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Targeting_range" unique_id=520168121]
+shape = SubResource("BoxShape3D_xyfrd")
+debug_color = Color(0, 0.6, 0.69803923, 1)
