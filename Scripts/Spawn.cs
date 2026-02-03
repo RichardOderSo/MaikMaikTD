@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-public partial class MonsterSpawn : Node3D
+public partial class Spawn : Node3D
 {
 
     [Export]
-    public PackedScene MonsterScene;
+    public PackedScene SpawnableEntity;
 	[Export]
-	public Node3D MonsterSpawnPoint;
+	public Node3D SpawnPoint;
     [Export(PropertyHint.Range, "0,10,0.1")]
     private float SpawnSpacing = 1.5f;
 
@@ -23,7 +23,7 @@ public partial class MonsterSpawn : Node3D
         // Debug spawn
         if (Input.IsActionJustPressed("debug_spawn"))
         {
-            SpawnMonster();
+            SpawnEntity();
         }
     }
 
@@ -32,24 +32,24 @@ public partial class MonsterSpawn : Node3D
 	{
 	}
 
-    private void SpawnMonster()
+    private void SpawnEntity()
     {
-        if (MonsterSpawnPoint == null)
+        if (SpawnPoint == null)
         {
-            GD.PrintErr("MonsterSpawnPoint not set!");
+            GD.PrintErr("SpawnPoint not set!");
             return;
         }
 
-        if (MonsterScene == null)
+        if (SpawnableEntity == null)
         {
-            GD.PrintErr("MonsterScene not set!");
+            GD.PrintErr("SpawnableEntity not set!");
             return;
         }
 
-        Node3D monster = MonsterScene.Instantiate<Node3D>();
+        Node3D monster = SpawnableEntity.Instantiate<Node3D>();
 
-        Vector3 basePos = MonsterSpawnPoint.GlobalPosition;
-        Vector3 right = MonsterSpawnPoint.GlobalTransform.Basis.X.Normalized();
+        Vector3 basePos = SpawnPoint.GlobalPosition;
+        Vector3 right = SpawnPoint.GlobalTransform.Basis.X.Normalized();
         Vector3 offset = right * (_spawnCount * SpawnSpacing);
         Vector3 targetPos = basePos + offset;
 
