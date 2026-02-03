@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c3jotkn5x2q06"]
 
 [ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="1_pquxj"]
+[ext_resource type="PackedScene" uid="uid://cd1griojc04wh" path="res://Scenes/Monster_Spawn.tscn" id="2_8n7cf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ajho"]
 size = Vector3(100, 0.1, 100)
@@ -28,3 +29,6 @@ shape = SubResource("BoxShape3D_5ajho")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=330688770]
 mesh = SubResource("BoxMesh_s8bxr")
+
+[node name="MonsterSpawn" parent="." unique_id=1344979708 instance=ExtResource("2_8n7cf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 7.572)

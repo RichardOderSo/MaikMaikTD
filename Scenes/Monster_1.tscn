@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dpdakci2by0mx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qbkls"]
+albedo_color = Color(0.53288186, 0.50575346, 0.99714094, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rpqav"]
+material = SubResource("StandardMaterial3D_qbkls")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kyqiw"]
+
+[node name="Monster_1" type="CharacterBody3D" unique_id=359858917]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=659335508]
+mesh = SubResource("CapsuleMesh_rpqav")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=482946539]
+shape = SubResource("CapsuleShape3D_kyqiw")

@@ -1,83 +1,130 @@
 using Godot;
-using System;
 
-public partial class Player : CharacterBody3D
-{
+public partial class Player : CharacterBody3D {
 
-	// Movement
-	[Export(PropertyHint.Range, "0, 10, 0.1")]
-	public float Speed = 5.0f;
+    // =====================
+    // Movement
+    // =====================
+    [Export(PropertyHint.Range, "0, 10, 0.1")]
+    public float Speed = 5.0f;
 
-	[Export]
-	public float JumpVelocity = 4.5f;
+    [Export]
+    public float JumpVelocity = 4.5f;
 
-	// Mouse movement
-	[Export]
-	public float MouseSensitivity = 0.002f;
+    // =====================
+    // Mouse look
+    // =====================
+    [Export]
+    public float MouseSensitivity = 0.002f;
 
-	private Camera3D _camera;
-	private float _pitch = 0f;
+    private Camera3D _camera;
+    private float _pitch = 0f;
 
-	public override void _PhysicsProcess(double delta)
-	{
-		Vector3 velocity = Velocity;
+    // =====================
+    // Spawning
+    // =====================
+    [Export] public PackedScene MonsterScene;
+    [Export] public Node3D MonsterSpawnPoint;
+    [Export] public float _spawnSpacing = 1.5f;
 
-		// Add the gravity.
-		if (!IsOnFloor())
-		{
-			velocity += GetGravity() * (float)delta;
-		}
-
-		// Handle Jump.
-		if (Input.IsActionJustPressed("move_jump") && IsOnFloor())
-		{
-			velocity.Y = JumpVelocity;
-		}
-
-		// Get the input direction and handle the movement/deceleration.
-		// As good practice, you should replace UI actions with custom gameplay actions.
-		Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
-		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		if (direction != Vector3.Zero)
-		{
-			velocity.X = direction.X * Speed;
-			velocity.Z = direction.Z * Speed;
-		}
-		else
-		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
-		}
-
-		Velocity = velocity;
-		MoveAndSlide();
-	}
+    private int _spawnCount = 0;
 
     public override void _Ready()
     {
-		_camera = GetNode<Camera3D>("Camera3D");
-		Input.MouseMode = Input.MouseModeEnum.Captured;
+        _camera = GetNode<Camera3D>("Camera3D");
+        _camera.MakeCurrent();
+        Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
     public override void _Input(InputEvent @event)
     {
-
+        // ESC toggle
         if (Input.IsActionJustPressed("ui_cancel"))
         {
-            Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured
-                ? Input.MouseModeEnum.Visible
-                : Input.MouseModeEnum.Captured;
-            return; 
+            Input.MouseMode =
+                Input.MouseMode == Input.MouseModeEnum.Captured
+                    ? Input.MouseModeEnum.Visible
+                    : Input.MouseModeEnum.Captured;
+            return;
         }
 
-        if (Input.MouseMode != Input.MouseModeEnum.Captured) return;
+        // Debug spawn
+        if (Input.IsActionJustPressed("debug_spawn"))
+        {
+            SpawnMonster();
+        }
 
-		if(@event is InputEventMouseMotion mm)
-		{
-			// Rotate player left/right
-			RotateY(-mm.Relative.X * MouseSensitivity);
+        if (Input.MouseMode != Input.MouseModeEnum.Captured)
+            return;
 
-		}
+        if (@event is InputEventMouseMotion mm)
+        {
+            // Yaw
+            RotateY(-mm.Relative.X * MouseSensitivity);
+
+        }
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        Vector3 velocity = Velocity;
+
+        // Gravity
+        if (!IsOnFloor())
+            velocity += GetGravity() * (float)delta;
+
+        // Jump
+        if (Input.IsActionJustPressed("move_jump") && IsOnFloor())
+            velocity.Y = JumpVelocity;
+
+        // Movement
+        Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
+        Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+
+        if (direction != Vector3.Zero)
+        {
+            velocity.X = direction.X * Speed;
+            velocity.Z = direction.Z * Speed;
+        }
+        else
+        {
+            velocity.X = Mathf.MoveToward(velocity.X, 0, Speed);
+            velocity.Z = Mathf.MoveToward(velocity.Z, 0, Speed);
+        }
+
+        Velocity = velocity;
+        MoveAndSlide();
+
+    }
+
+
+    private async void SpawnMonster()
+    {
+        if (MonsterSpawnPoint == null)
+        {
+            GD.PrintErr("MonsterSpawnPoint not set!");
+            return;
+        }
+
+        if (MonsterScene == null)
+        {
+            GD.PrintErr("MonsterScene not set!");
+            return;
+        }
+
+        Node3D monster = MonsterScene.Instantiate<Node3D>();
+
+        Vector3 basePos = MonsterSpawnPoint.GlobalPosition;
+        Vector3 right = MonsterSpawnPoint.GlobalTransform.Basis.X.Normalized();
+        Vector3 offset = right * (_spawnCount * _spawnSpacing);
+        Vector3 targetPos = basePos + offset;
+
+        // Transform preparation
+        var t = monster.Transform;
+        t.Origin = targetPos;
+        monster.Transform = t;
+
+        GetTree().CurrentScene.AddChild(monster);
+        _spawnCount++;
+    }
 }
