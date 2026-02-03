@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 
 
-public partial class Tower_shoot : StaticBody3D
+public partial class Tower : StaticBody3D
 {
 
 
 	private float _range = 10.0f;
+	private float _firingRate = 10.0f;          //projectiles * min^-1
+	private float _projectileSpeed = 100.0f;    //m*s^-1
 
 	[ExportGroup("Tower")]
 	[Export]
@@ -19,11 +21,28 @@ public partial class Tower_shoot : StaticBody3D
 			UpdateRange();
 		}
 	}
+	[Export(PropertyHint.None, "suffix:projectiles/min")]
+	public float FiringRate{ 
+		get => _firingRate;
+		set {
+			_firingRate = value;
+			UpdateFiringRate();
+		}
+	}
+
+	[Export(PropertyHint.None, "suffix:m/s")]
+	public float ProjectileSpeed{ 
+		get => _projectileSpeed;
+		set => _projectileSpeed = value;
+	}
+
 
 	private Area3D _targetingRange = null;
+	private Timer _fireDelay = null;
 
-	LinkedList<Node3D> _enemiesInRange = new LinkedList<Node3D>();
-	float _currentShortesDistance = 10000;
+	private LinkedList<Node3D> _enemiesInRange = new LinkedList<Node3D>();
+	float _currentShortesDistance = float.PositiveInfinity;
+	private Node3D _currentClosest = null;
 
 	
 
@@ -31,29 +50,44 @@ public partial class Tower_shoot : StaticBody3D
 		_targetingRange.Scale = new Vector3(_range, _range, _range);
 	}
 
+	private void UpdateFiringRate() {
+		_fireDelay.WaitTime = 1/(_firingRate/60);
+	}
 	private float CalculateDistance(Node3D body) {
-		return (body.Position - this.Position).Length();
+		return (this.GlobalPosition.DistanceTo(body.GlobalPosition));
 	}
 
 	private void BodyEntered(Node3D body) {
-		GD.Print("entered");
+		if (_currentClosest == null) { _currentClosest = body;}
 		_enemiesInRange.AddLast(body);
-		GD.Print($"{_enemiesInRange.Count} inside");
 	}
+
 	private void BodyExited(Node3D body) {
-		GD.Print("exited");
+		if (body == _enemiesInRange.First.Value) {
+			_enemiesInRange.Remove(body);
+			_currentShortesDistance = float.PositiveInfinity;
+
+			CalculateClosest();
+			return;
+		}
+
 		_enemiesInRange.Remove(body);
-		GD.Print($"{_enemiesInRange.Count} remaining");
+
 	}
 
 	private void CalculateClosest(){
 		float distance;
-		Node3D closest = null;
+		Node3D closest =  null;
 
 		if (_enemiesInRange.Count == 0) {return;}
+
+		if (CalculateDistance(_currentClosest) > _currentShortesDistance) {
+			_currentShortesDistance = float.PositiveInfinity;
+		}
 		
 		foreach (Node3D enemie in _enemiesInRange) { 
 			distance = CalculateDistance(enemie);
+
 
 			if (distance < _currentShortesDistance) {
 				_currentShortesDistance = distance;
@@ -63,6 +97,7 @@ public partial class Tower_shoot : StaticBody3D
 		if (closest != null) {
 			_enemiesInRange.Remove(closest);
 			_enemiesInRange.AddFirst(closest);
+			_currentClosest = closest;
 		}
 	}
 
@@ -71,6 +106,8 @@ public partial class Tower_shoot : StaticBody3D
 			GD.Print("nothing in range");
 			return;
 		}
+
+		CalculateClosest();
 
 		Node3D closest = _enemiesInRange.First.Value;
 		GD.Print($"closest at {closest.Position}");
@@ -81,15 +118,20 @@ public partial class Tower_shoot : StaticBody3D
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		_targetingRange = GetNode<Area3D>("Targeting_range");
+		_targetingRange = GetNode<Area3D>("TargetingRange");
+		_fireDelay= GetNode<Timer>("FireDelay");
+
+		UpdateRange();
+		UpdateFiringRate();
 
 		_targetingRange.BodyEntered += (body) => BodyEntered(body);
 		_targetingRange.BodyExited += (body) => BodyExited(body);
+
+		_fireDelay.Timeout += () => ShootClosest();
+		_fireDelay.Start();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
-		CalculateClosest();
-		ShootClosest();
 	}
 }

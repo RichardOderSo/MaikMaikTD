@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://doowbeiaptsu8"]
 
-[ext_resource type="Script" uid="uid://dpv08vp5npyef" path="res://Scripts/Tower_shoot.cs" id="1_4yjk7"]
+[ext_resource type="Script" uid="uid://dpv08vp5npyef" path="res://Scripts/Tower.cs" id="1_4yjk7"]
 [ext_resource type="Texture2D" uid="uid://baa7xtjfrdcat" path="res://Assets/kenney_prototype_texture/Vector/texture_09.svg" id="1_ry8d0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4yjk7"]
@@ -19,7 +19,7 @@ size = Vector3(1, 0.2, 1)
 [node name="Tower" type="StaticBody3D" unique_id=1388623405]
 collision_layer = 2
 script = ExtResource("1_4yjk7")
-Range = 15.0
+FiringRate = 60.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=833072993]
 mesh = SubResource("CylinderMesh_tpt2e")
@@ -27,10 +27,12 @@ mesh = SubResource("CylinderMesh_tpt2e")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=83038042]
 shape = SubResource("CylinderShape3D_tpt2e")
 
-[node name="Targeting_range" type="Area3D" parent="." unique_id=919143604]
+[node name="TargetingRange" type="Area3D" parent="." unique_id=919143604]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Targeting_range" unique_id=520168121]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TargetingRange" unique_id=520168121]
 shape = SubResource("BoxShape3D_xyfrd")
 debug_color = Color(0, 0.6, 0.69803923, 1)
+
+[node name="FireDelay" type="Timer" parent="." unique_id=757115590]
