@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dpv08vp5npyef" path="res://Scripts/Entities/Tower.cs" id="1_4yjk7"]
 [ext_resource type="Texture2D" uid="uid://baa7xtjfrdcat" path="res://Assets/kenney_prototype_texture/Vector/texture_09.svg" id="1_ry8d0"]
+[ext_resource type="Script" uid="uid://fnox22rwj2ag" path="res://Scripts/Entities/Components/Attacks/ProjectileAttack.cs" id="3_t43y4"]
+[ext_resource type="PackedScene" uid="uid://b8ngsbkp627rg" path="res://Scenes/Entities/Projectile.tscn" id="4_5wdf1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4yjk7"]
 albedo_color = Color(0.97059494, 0.97059506, 3.85046e-06, 1)
@@ -19,12 +21,19 @@ size = Vector3(1, 0.2, 1)
 [node name="Tower" type="StaticBody3D" unique_id=1388623405]
 collision_layer = 2
 script = ExtResource("1_4yjk7")
+FiringRate = 30.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=833072993]
 mesh = SubResource("CylinderMesh_tpt2e")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=83038042]
 shape = SubResource("CylinderShape3D_tpt2e")
+
+[node name="ProjectileAttack" type="Node" parent="." unique_id=1674604197]
+script = ExtResource("3_t43y4")
+ProjectileScene = ExtResource("4_5wdf1")
+ProjectileSpeed = 100.0
+metadata/_custom_type_script = "uid://fnox22rwj2ag"
 
 [node name="TargetingRange" type="Area3D" parent="." unique_id=919143604]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)

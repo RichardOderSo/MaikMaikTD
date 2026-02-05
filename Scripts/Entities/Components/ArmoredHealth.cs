@@ -4,6 +4,7 @@ using System;
 [GlobalClass]
 public partial class ArmoredHealth : Health{
 
+    //TODO fix ArmorValue, currently 1 means no armor
     [Export(PropertyHint.Range, "0,1,0.1")]
     public float ArmorValue {get; protected set;} = 0;
 
