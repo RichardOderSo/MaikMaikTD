@@ -6,7 +6,7 @@ public partial class Projectile : Area3D {
 	private Vector3 _direction;
 	private Vector3 _spawnPoint;
 	
-	public void Instatiate(float speed, Vector3 spawnPoint, Vector3 direction) {
+	public void Instantiate(float speed, Vector3 spawnPoint, Vector3 direction) {
 		_speed = speed;
 		_spawnPoint = spawnPoint;
 		_direction = direction;

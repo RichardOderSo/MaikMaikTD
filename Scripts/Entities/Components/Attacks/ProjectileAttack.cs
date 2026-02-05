@@ -14,7 +14,7 @@ public partial class ProjectileAttack : Attack
 
 	public void Attack(Vector3 targetPosition) {
 		Projectile bullet = ProjectileScene.Instantiate<Projectile>();
-		bullet.Instatiate(
+		bullet.Instantiate(
 				ProjectileSpeed,
 				_bulletSpawnPoint.GlobalPosition,
 				_bulletSpawnPoint.GlobalPosition.DirectionTo(targetPosition));
