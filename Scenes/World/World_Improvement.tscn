@@ -2,8 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://dbkehpnnwfa7b" path="res://Assets/Low Poly/Buildings/GuardTower.fbx" id="1_t1m6h"]
 [ext_resource type="PackedScene" uid="uid://d3qymsqxg80uq" path="res://Assets/Low Poly/Structures/WoodenWall.fbx" id="2_o7kuj"]
+[ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster_1.tscn" id="2_yv1ww"]
 [ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="3_yv1ww"]
 [ext_resource type="PackedScene" uid="uid://bt1yrdu4iof65" path="res://Assets/Low Poly/Buildings/Houses_SecondAge_1_Level2.fbx" id="4_oisa4"]
+[ext_resource type="PackedScene" uid="uid://cd1griojc04wh" path="res://Scenes/World/Spawner.tscn" id="6_oisa4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ajho"]
 size = Vector3(100, 0.1, 100)
@@ -19,24 +21,21 @@ uv1_triplanar_sharpness = 0.84089553
 material = SubResource("StandardMaterial3D_8n7cf")
 size = Vector3(100, 0.1, 100)
 
-[node name="Node3D" type="Node3D" unique_id=1178592073]
+[sub_resource type="BoxShape3D" id="BoxShape3D_yv1ww"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_61fqv"]
+albedo_color = Color(0.24698552, 0.41838595, 0.18922368, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_oisa4"]
+material = SubResource("StandardMaterial3D_61fqv")
+
+[node name="Base" type="Node3D" unique_id=1416840782]
 
 [node name="GuardTower2" parent="." unique_id=1091584482 instance=ExtResource("1_t1m6h")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, -8.834944, 0, 10.686977)
 
-[node name="Front_Left" type="Node" parent="." unique_id=1842506016]
-
-[node name="WoodenWall" parent="Front_Left" unique_id=1034792968 instance=ExtResource("2_o7kuj")]
-transform = Transform3D(8.368552, 0, 0, 0, 7.940486, 0, 0, 0, 1, 9.688753, 0.06219939, 18.443754)
-
-[node name="WoodenWall2" parent="Front_Left" unique_id=1221097740 instance=ExtResource("2_o7kuj")]
-transform = Transform3D(8.369, 0, 0, 0, 7.94, 0, 0, 0, 1, 20.99923, 0.062, 18.443983)
-
 [node name="Platform" type="Node3D" parent="." unique_id=674573646]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28938198, 0, 1.7919818)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Platform" unique_id=156544188]
-transform = Transform3D(1, 0, 0, 0, 0.58778507, 0.8090171, 0, -0.8090171, 0.58778507, 0, 22.154139, 49.24125)
 
 [node name="Ground" type="StaticBody3D" parent="Platform" unique_id=1295425531]
 collision_layer = 2
@@ -47,10 +46,23 @@ shape = SubResource("BoxShape3D_5ajho")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Platform/Ground" unique_id=330688770]
 mesh = SubResource("BoxMesh_s8bxr")
 
-[node name="GuardTower" parent="." unique_id=1490219506 instance=ExtResource("1_t1m6h")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 7.5545917, 0, 9.950982)
+[node name="Right_Wall" type="Node3D" parent="." unique_id=1878020440]
 
-[node name="Back_Wall" type="Node" parent="." unique_id=1659140940]
+[node name="WoodenWall" parent="Right_Wall" unique_id=922570092 instance=ExtResource("2_o7kuj")]
+transform = Transform3D(-3.6580104e-07, 0, 1, 0, 7.940486, 0, -8.368552, 0, -4.371139e-08, -27.93884, 0.06219939, 35.40113)
+
+[node name="WoodenWall2" parent="Right_Wall" unique_id=1443771681 instance=ExtResource("2_o7kuj")]
+transform = Transform3D(-3.658206e-07, 0, 0.99999994, 0, 7.939999, 0, -8.369, 0, -4.371139e-08, -27.938612, 0.062, 24.090656)
+
+[node name="Front_Right" type="Node3D" parent="." unique_id=402472548]
+
+[node name="WoodenWall" parent="Front_Right" unique_id=490011909 instance=ExtResource("2_o7kuj")]
+transform = Transform3D(8.368552, 0, 0, 0, 7.940486, 0, 0, 0, 1, -22.270006, 0.06219939, 18.443754)
+
+[node name="WoodenWall2" parent="Front_Right" unique_id=1232408659 instance=ExtResource("2_o7kuj")]
+transform = Transform3D(8.369, 0, 0, 0, 7.94, 0, 0, 0, 1, -10.95953, 0.062, 18.443983)
+
+[node name="Back_Wall" type="Node3D" parent="." unique_id=1599683354]
 
 [node name="WoodenWall" parent="Back_Wall" unique_id=733308236 instance=ExtResource("2_o7kuj")]
 transform = Transform3D(-8.368552, 0, -8.742278e-08, 0, 7.940486, 0, 7.316021e-07, 0, -1, -10.979828, 0.06219939, 41.071175)
@@ -67,7 +79,15 @@ transform = Transform3D(-8.369, 0, -8.742278e-08, 0, 7.939999, 0, 7.316412e-07, 
 [node name="WoodenWall5" parent="Back_Wall" unique_id=1249358436 instance=ExtResource("2_o7kuj")]
 transform = Transform3D(-8.368552, 0, -8.742278e-08, 0, 7.940486, 0, 7.316021e-07, 0, -1, 21.01613, 0.06219939, 41.071175)
 
-[node name="Left_Wall" type="Node" parent="." unique_id=641753220]
+[node name="Front_Left" type="Node3D" parent="." unique_id=965434329]
+
+[node name="WoodenWall" parent="Front_Left" unique_id=1034792968 instance=ExtResource("2_o7kuj")]
+transform = Transform3D(8.368552, 0, 0, 0, 7.940486, 0, 0, 0, 1, 9.688753, 0.06219939, 18.443754)
+
+[node name="WoodenWall2" parent="Front_Left" unique_id=1221097740 instance=ExtResource("2_o7kuj")]
+transform = Transform3D(8.369, 0, 0, 0, 7.94, 0, 0, 0, 1, 20.99923, 0.062, 18.443983)
+
+[node name="Left_Wall" type="Node3D" parent="." unique_id=595534828]
 
 [node name="WoodenWall" parent="Left_Wall" unique_id=82767902 instance=ExtResource("2_o7kuj")]
 transform = Transform3D(-3.6580104e-07, 0, 1, 0, 7.940486, 0, -8.368552, 0, -4.371139e-08, 26.64191, 0.06219939, 35.40113)
@@ -75,21 +95,74 @@ transform = Transform3D(-3.6580104e-07, 0, 1, 0, 7.940486, 0, -8.368552, 0, -4.3
 [node name="WoodenWall2" parent="Left_Wall" unique_id=1835682281 instance=ExtResource("2_o7kuj")]
 transform = Transform3D(-3.658206e-07, 0, 0.99999994, 0, 7.939999, 0, -8.369, 0, -4.371139e-08, 26.64214, 0.062, 24.090656)
 
-[node name="Front_Right" type="Node" parent="." unique_id=1066501447]
+[node name="GuardTower" parent="." unique_id=1490219506 instance=ExtResource("1_t1m6h")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 7.5545917, 0, 9.950982)
 
-[node name="WoodenWall" parent="Front_Right" unique_id=490011909 instance=ExtResource("2_o7kuj")]
-transform = Transform3D(8.368552, 0, 0, 0, 7.940486, 0, 0, 0, 1, -22.270006, 0.06219939, 18.443754)
+[node name="Archer_1" parent="GuardTower" unique_id=359858917 instance=ExtResource("2_yv1ww")]
+transform = Transform3D(0.32000002, 0, 0, 0, 0.32000002, 0, 0, 0, 0.32000002, -6.5527296, 2.457255, 0.21488333)
 
-[node name="WoodenWall2" parent="Front_Right" unique_id=1232408659 instance=ExtResource("2_o7kuj")]
-transform = Transform3D(8.369, 0, 0, 0, 7.94, 0, 0, 0, 1, -10.95953, 0.062, 18.443983)
-
-[node name="Right_Wall" type="Node" parent="." unique_id=592158158]
-
-[node name="WoodenWall" parent="Right_Wall" unique_id=922570092 instance=ExtResource("2_o7kuj")]
-transform = Transform3D(-3.6580104e-07, 0, 1, 0, 7.940486, 0, -8.368552, 0, -4.371139e-08, -27.93884, 0.06219939, 35.40113)
-
-[node name="WoodenWall2" parent="Right_Wall" unique_id=1443771681 instance=ExtResource("2_o7kuj")]
-transform = Transform3D(-3.658206e-07, 0, 0.99999994, 0, 7.939999, 0, -8.369, 0, -4.371139e-08, -27.938612, 0.062, 24.090656)
+[node name="Archer_2" parent="GuardTower" unique_id=91212615 instance=ExtResource("2_yv1ww")]
+transform = Transform3D(0.32000002, 0, 0, 0, 0.32000002, 0, 0, 0, 0.32000002, 0.020549774, 2.4567099, -0.038995504)
 
 [node name="Houses_SecondAge_1_Level2" parent="." unique_id=346184512 instance=ExtResource("4_oisa4")]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -0.513463, 0.05612822, 36.22689)
+
+[node name="Ground_Path" type="Node3D" parent="." unique_id=956547847]
+
+[node name="Tile" type="Node3D" parent="Ground_Path" unique_id=1599225054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, -2.269374)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile" unique_id=917318192]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile/StaticBody3D" unique_id=13408197]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_yv1ww")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile/StaticBody3D" unique_id=2040587178]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_oisa4")
+
+[node name="Tile2" type="Node3D" parent="Ground_Path" unique_id=1708673429]
+transform = Transform3D(-4.371139e-08, 0, 3, 0, 1, 0, -1, 0, -1.3113416e-07, 0, 0, -14.266799)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile2" unique_id=127049683]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile2/StaticBody3D" unique_id=1041920614]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_yv1ww")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile2/StaticBody3D" unique_id=847487813]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_oisa4")
+
+[node name="Tile3" type="Node3D" parent="Ground_Path" unique_id=681653843]
+transform = Transform3D(-4.371139e-08, 0, 3, 0, 1, 0, -1, 0, -1.3113416e-07, -18.002544, 0, -14.266799)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile3" unique_id=1112671552]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile3/StaticBody3D" unique_id=1261667433]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_yv1ww")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile3/StaticBody3D" unique_id=1371684310]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_oisa4")
+
+[node name="Tile4" type="Node3D" parent="Ground_Path" unique_id=1065934632]
+transform = Transform3D(-4.371139e-08, 0, 3, 0, 1, 0, -1, 0, -1.3113416e-07, 17.980621, 0, -14.266799)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile4" unique_id=885856903]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile4/StaticBody3D" unique_id=1106875438]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_yv1ww")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile4/StaticBody3D" unique_id=1307509238]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_oisa4")
+
+[node name="Spawner" parent="Ground_Path" unique_id=1344979708 instance=ExtResource("6_oisa4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.927519, 0, -14.538247)
+
+[node name="Spawner2" parent="Ground_Path" unique_id=1318030674 instance=ExtResource("6_oisa4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.975742, 0, -14.538247)

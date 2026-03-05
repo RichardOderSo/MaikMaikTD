@@ -1,25 +1,40 @@
 [gd_scene format=3 uid="uid://cvmpmrtkue510"]
 
-[ext_resource type="PackedScene" uid="uid://c3jotkn5x2q06" path="res://Scenes/World/Platform.tscn" id="1_j5yw3"]
-[ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster_1.tscn" id="2_b2bpf"]
 [ext_resource type="PackedScene" uid="uid://dmq0wvwkr7orh" path="res://Scenes/Entities/Player.tscn" id="2_kldst"]
 [ext_resource type="PackedScene" uid="uid://doowbeiaptsu8" path="res://Scenes/Entities/Tower.tscn" id="3_b2bpf"]
-[ext_resource type="PackedScene" uid="uid://b8ngsbkp627rg" path="res://Scenes/Entities/Projectile.tscn" id="5_7lihs"]
+[ext_resource type="PackedScene" uid="uid://b3jn5e61rcgbt" path="res://Scenes/World/World_Improvement.tscn" id="5_b2bpf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j5yw3"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_kldst"]
+sky_material = SubResource("ProceduralSkyMaterial_j5yw3")
+
+[sub_resource type="Environment" id="Environment_b2bpf"]
+background_mode = 2
+sky = SubResource("Sky_kldst")
+tonemap_mode = 2
+glow_enabled = true
 
 [node name="Game" type="Node3D" unique_id=1992121116]
 
-[node name="Platform" parent="." unique_id=674573646 instance=ExtResource("1_j5yw3")]
-
-[node name="Spawner" parent="Platform" index="2" unique_id=1344979708 node_paths=PackedStringArray("SpawnPoint")]
-SpawnableEntity = ExtResource("2_b2bpf")
-SpawnPoint = NodePath("StaticBody3D/Spawn")
-
 [node name="Player" parent="." unique_id=532005981 instance=ExtResource("2_kldst")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10.080442)
+Speed = 8.0
 
 [node name="Tower" parent="." unique_id=1388623405 instance=ExtResource("3_b2bpf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -7.234)
-BulletScene = ExtResource("5_7lihs")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.294884)
 
-[editable path="Platform"]
-[editable path="Platform/Spawner"]
+[node name="Base" parent="." unique_id=1416840782 instance=ExtResource("5_b2bpf")]
+
+[node name="Environment" type="Node3D" parent="." unique_id=1944405917]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=2024185637]
+transform = Transform3D(0.99890935, -0.025185429, 0.039317433, -0.043880895, -0.7941373, 0.6061521, 0.015957236, -0.6072163, -0.7943763, -22.419231, 21.168034, -35.751465)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1410679114]
+environment = SubResource("Environment_b2bpf")
+
+[editable path="Base"]
