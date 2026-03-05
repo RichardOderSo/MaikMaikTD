@@ -3,7 +3,7 @@ using Godot;
 public partial class Player : CharacterBody3D {
 
 	// Movement
-	[Export(PropertyHint.Range, "0, 10, 0.1")]
+	[Export(PropertyHint.Range, "0, 20, 0.1")]
 	public float Speed = 5.0f;
 
 	[Export]
@@ -13,13 +13,27 @@ public partial class Player : CharacterBody3D {
 	[Export]
 	public float MouseSensitivity = 0.002f;
 
+	[Export]
+	public float MinPitchDeg = -60f;
+
+    [Export]
+    public float MaxPitchDeg = 35f;
+
+	private Node3D _cameraPivot;
+	private SpringArm3D _springArm;
 	private Camera3D _camera;
-	private float _pitch = 0f;
+
+	private float _pitchRad = 0f;
 
 	public override void _Ready()
 	{
-		_camera = GetNode<Camera3D>("Camera3D");
+
+		_cameraPivot = GetNode<Node3D>("CameraPivot");
+		_springArm = _cameraPivot.GetNode<SpringArm3D>("SpringArm3D");
+		_camera = _springArm.GetNode<Camera3D>("Camera3D");
+
 		_camera.MakeCurrent();
+
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
@@ -40,8 +54,18 @@ public partial class Player : CharacterBody3D {
 
 		if (@event is InputEventMouseMotion mm)
 		{
-			// Yaw
-			RotateY(-mm.Relative.X * MouseSensitivity);
+			float yawDelta = -mm.Relative.X * MouseSensitivity;
+			float pitchDelta = -mm.Relative.Y * MouseSensitivity;
+
+			// Yaw player left/right
+			RotateY(yawDelta);
+
+			// Pitch up/down
+			_pitchRad = Mathf.Clamp(_pitchRad + pitchDelta, Mathf.DegToRad(MinPitchDeg), Mathf.DegToRad(MaxPitchDeg));
+
+			var rot = _cameraPivot.Rotation;
+			rot.X = _pitchRad;
+			_cameraPivot.Rotation = rot;
 
 		}
 	}
@@ -60,14 +84,27 @@ public partial class Player : CharacterBody3D {
 
 		// Movement
 		Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_forward", "move_back");
-		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+		// Movement relative to camera yaw
+		Basis camBasis = _camera.GlobalTransform.Basis;
 
-		if (direction != Vector3.Zero)
+		Vector3 forward = camBasis.Z;
+		forward.Y = 0;
+		forward = forward.Normalized();
+	
+		Vector3 right = camBasis.X;
+		right.Y = 0;
+		right = right.Normalized();
+
+        Vector3 moveDir = (right * inputDir.X + forward * inputDir.Y);
+        if (moveDir.LengthSquared() > 0.0001f)
+			moveDir = moveDir.Normalized();
+
+		// Speed
+		if(moveDir != Vector3.Zero)
 		{
-			velocity.X = direction.X * Speed;
-			velocity.Z = direction.Z * Speed;
-		}
-		else
+			velocity.X = moveDir.X * Speed;
+			velocity.Z = moveDir.Z * Speed;
+		} else
 		{
 			velocity.X = Mathf.MoveToward(velocity.X, 0, Speed);
 			velocity.Z = Mathf.MoveToward(velocity.Z, 0, Speed);

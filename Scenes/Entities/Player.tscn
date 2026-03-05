@@ -21,6 +21,12 @@ mesh = SubResource("CapsuleMesh_rpqav")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=482946539]
 shape = SubResource("CapsuleShape3D_kyqiw")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=2132094172]
-transform = Transform3D(1, 0, 0, 0, 0.9597464, 0.28086773, 0, -0.28086773, 0.9597464, 0, 3.1715543, 8)
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1049513115]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=357832328]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7949809, 1.4903798)
+spring_length = 5.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=2132094172]
+transform = Transform3D(1, 0, 0, 0, 0.9597465, 0.28086776, 0, -0.28086776, 0.9597465, 0, 3.1715543, 8)
 keep_aspect = 0
