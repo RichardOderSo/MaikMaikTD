@@ -1,12 +1,7 @@
 [gd_scene format=3 uid="uid://c3jotkn5x2q06"]
 
-[ext_resource type="Script" uid="uid://cyw58maojpcfy" path="res://Scripts/World/Platform.cs" id="1_1bluh"]
 [ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="1_pquxj"]
 [ext_resource type="PackedScene" uid="uid://cd1griojc04wh" path="res://Scenes/World/Spawner.tscn" id="2_8n7cf"]
-[ext_resource type="PackedScene" uid="uid://doowbeiaptsu8" path="res://Scenes/Entities/Tower.tscn" id="4_32xp7"]
-
-[sub_resource type="NavigationMesh" id="NavigationMesh_1bluh"]
-geometry_parsed_geometry_type = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ajho"]
 size = Vector3(100, 0.1, 100)
@@ -22,15 +17,9 @@ uv1_triplanar_sharpness = 0.84089553
 material = SubResource("StandardMaterial3D_8n7cf")
 size = Vector3(100, 0.1, 100)
 
-[node name="Platform" type="NavigationRegion3D" unique_id=655569187]
-navigation_mesh = SubResource("NavigationMesh_1bluh")
-script = ExtResource("1_1bluh")
-
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=156544188]
-transform = Transform3D(1, 0, 0, 0, 0.58778507, 0.8090171, 0, -0.8090171, 0.58778507, 0, 22.154139, 49.24125)
+[node name="Platform" type="Node3D" unique_id=674573646]
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1295425531]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 collision_layer = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1338810637]
@@ -41,6 +30,3 @@ mesh = SubResource("BoxMesh_s8bxr")
 
 [node name="Spawner" parent="." unique_id=1344979708 instance=ExtResource("2_8n7cf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 9.601)
-
-[node name="Tower" parent="." unique_id=1388623405 instance=ExtResource("4_32xp7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -7.234)
