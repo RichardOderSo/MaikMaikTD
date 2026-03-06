@@ -6,16 +6,17 @@ public partial class Spawn : Node3D
 
     [Export]
     public PackedScene SpawnableEntity;
-	[Export]
-	public Node3D SpawnPoint;
+	
     [Export(PropertyHint.Range, "0,10,0.1")]
     private float SpawnSpacing = 1.5f;
 
     private int _spawnCount = 0;
+    private Node3D _spawnPoint;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
+        _spawnPoint = GetNode<Node3D>("StaticBody3D/Spawn");
 	}
 
     public override void _Input(InputEvent @event)
@@ -34,7 +35,7 @@ public partial class Spawn : Node3D
 
     private void SpawnEntity()
     {
-        if (SpawnPoint == null)
+        if (_spawnPoint == null)
         {
             GD.PrintErr("SpawnPoint not set!");
             return;
@@ -48,8 +49,8 @@ public partial class Spawn : Node3D
 
         Node3D monster = SpawnableEntity.Instantiate<Node3D>();
 
-        Vector3 basePos = SpawnPoint.GlobalPosition;
-        Vector3 right = SpawnPoint.GlobalTransform.Basis.X.Normalized();
+        Vector3 basePos = _spawnPoint.GlobalPosition;
+        Vector3 right = _spawnPoint.GlobalTransform.Basis.X.Normalized();
         Vector3 offset = right * (_spawnCount * SpawnSpacing);
         Vector3 targetPos = basePos + offset;
 
