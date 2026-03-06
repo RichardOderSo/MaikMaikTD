@@ -13,13 +13,13 @@ public partial class Player : CharacterBody3D {
 	[Export]
 	public float MouseSensitivity = 0.002f;
 
-	[Export]
-	public float MinPitchDeg = -60f;
+    [Export]
+    public float MinPitchDeg = -35f;
 
     [Export]
-    public float MaxPitchDeg = 35f;
+    public float MaxPitchDeg = 45f;
 
-	private Node3D _cameraPivot;
+    private Node3D _cameraPivot;
 	private SpringArm3D _springArm;
 	private Camera3D _camera;
 
