@@ -13,13 +13,13 @@ public partial class Player : CharacterBody3D {
 	[Export]
 	public float MouseSensitivity = 0.002f;
 
-    [Export]
-    public float MinPitchDeg = -35f;
+	[Export]
+	public float MinPitchDeg = -35f;
 
-    [Export]
-    public float MaxPitchDeg = 45f;
+	[Export]
+	public float MaxPitchDeg = 45f;
 
-    private Node3D _cameraPivot;
+	private Node3D _cameraPivot;
 	private SpringArm3D _springArm;
 	private Camera3D _camera;
 
@@ -95,8 +95,8 @@ public partial class Player : CharacterBody3D {
 		right.Y = 0;
 		right = right.Normalized();
 
-        Vector3 moveDir = (right * inputDir.X + forward * inputDir.Y);
-        if (moveDir.LengthSquared() > 0.0001f)
+		Vector3 moveDir = (right * inputDir.X + forward * inputDir.Y);
+		if (moveDir.LengthSquared() > 0.0001f)
 			moveDir = moveDir.Normalized();
 
 		// Speed

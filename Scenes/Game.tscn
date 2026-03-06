@@ -29,6 +29,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.294884)
 
 [node name="Base" parent="." unique_id=1416840782 instance=ExtResource("5_b2bpf")]
 
+[node name="Ground" parent="Base/Platform" parent_id_path=PackedInt32Array(1416840782, 674573646) index="0" unique_id=1295425531]
+collision_layer = 2
+
 [node name="Spawner" parent="Base/Ground_Path" parent_id_path=PackedInt32Array(1416840782, 956547847) index="4" unique_id=1344979708]
 SpawnableEntity = ExtResource("4_kldst")
 

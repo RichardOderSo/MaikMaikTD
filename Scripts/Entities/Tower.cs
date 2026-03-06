@@ -77,9 +77,7 @@ public partial class Tower : StaticBody3D
 
 		CalculateClosest();
 
-		Node3D closest = _enemiesInRange.First.Value;
-
-		_projectileAttack.Attack(closest.GlobalPosition);
+		_projectileAttack.Attack(_currentClosest.GlobalPosition);
 	}
 	private void BodyEntered(Node3D body) {
 		if (_currentClosest == null) { _currentClosest = body;}
