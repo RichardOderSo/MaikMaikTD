@@ -27,15 +27,15 @@ Speed = 8.0
 [node name="Tower" parent="." unique_id=1388623405 instance=ExtResource("3_b2bpf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.294884)
 
-[node name="Base" parent="." unique_id=1416840782 instance=ExtResource("5_b2bpf")]
+[node name="Level" parent="." unique_id=1416840782 instance=ExtResource("5_b2bpf")]
 
-[node name="Ground" parent="Base/Platform" parent_id_path=PackedInt32Array(1416840782, 674573646) index="0" unique_id=1295425531]
+[node name="Ground" parent="Level/Platform" parent_id_path=PackedInt32Array(1416840782, 674573646) index="0" unique_id=1295425531]
 collision_layer = 2
 
-[node name="Spawner" parent="Base/Ground_Path" parent_id_path=PackedInt32Array(1416840782, 956547847) index="4" unique_id=1344979708]
+[node name="Spawner" parent="Level/Platform/Ground_Path" parent_id_path=PackedInt32Array(1416840782, 956547847) index="4" unique_id=1344979708]
 SpawnableEntity = ExtResource("4_kldst")
 
-[node name="Spawner2" parent="Base/Ground_Path" parent_id_path=PackedInt32Array(1416840782, 956547847) index="5" unique_id=1318030674]
+[node name="Spawner2" parent="Level/Platform/Ground_Path" parent_id_path=PackedInt32Array(1416840782, 956547847) index="5" unique_id=1318030674]
 SpawnableEntity = ExtResource("4_kldst")
 
 [node name="Environment" type="Node3D" parent="." unique_id=1944405917]
@@ -47,6 +47,4 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1410679114]
 environment = SubResource("Environment_b2bpf")
 
-[editable path="Base"]
-[editable path="Base/GuardTower2"]
-[editable path="Base/Ground_Path/Spawner"]
+[editable path="Level"]
