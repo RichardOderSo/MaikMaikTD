@@ -1,5 +1,9 @@
 [gd_scene format=3 uid="uid://dpdakci2by0mx"]
 
+[ext_resource type="Script" uid="uid://dj2keydrdd8q6" path="res://Scripts/Entities/Monster1.cs" id="1_2ugxc"]
+[ext_resource type="Script" uid="uid://lsluamosce48" path="res://Scripts/Entities/Components/Health.cs" id="2_4ods0"]
+[ext_resource type="Script" uid="uid://bar4pcmjnqu3h" path="res://Scripts/Entities/Components/Attacks/PokeAttack.cs" id="3_lur63"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qbkls"]
 albedo_color = Color(0.53288186, 0.50575346, 0.99714094, 1)
 
@@ -9,9 +13,23 @@ material = SubResource("StandardMaterial3D_qbkls")
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kyqiw"]
 
 [node name="Monster_1" type="CharacterBody3D" unique_id=359858917]
+collision_layer = 5
+collision_mask = 3
+script = ExtResource("1_2ugxc")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=659335508]
 mesh = SubResource("CapsuleMesh_rpqav")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=482946539]
 shape = SubResource("CapsuleShape3D_kyqiw")
+
+[node name="Health" type="Node" parent="." unique_id=1029250628]
+script = ExtResource("2_4ods0")
+metadata/_custom_type_script = "uid://lsluamosce48"
+
+[node name="PokeAttack" type="Node" parent="." unique_id=1675579728]
+script = ExtResource("3_lur63")
+metadata/_custom_type_script = "uid://bar4pcmjnqu3h"
+
+[node name="Pathfinding" type="NavigationAgent3D" parent="." unique_id=870279220]
+avoidance_enabled = true

@@ -3,8 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://c3jotkn5x2q06" path="res://Scenes/World/Platform.tscn" id="1_j5yw3"]
 [ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster_1.tscn" id="2_b2bpf"]
 [ext_resource type="PackedScene" uid="uid://dmq0wvwkr7orh" path="res://Scenes/Entities/Player.tscn" id="2_kldst"]
-[ext_resource type="PackedScene" uid="uid://doowbeiaptsu8" path="res://Scenes/Entities/Tower.tscn" id="3_b2bpf"]
-[ext_resource type="PackedScene" uid="uid://b8ngsbkp627rg" path="res://Scenes/Entities/Projectile.tscn" id="5_7lihs"]
 
 [node name="Game" type="Node3D" unique_id=1992121116]
 
@@ -16,10 +14,6 @@ SpawnPoint = NodePath("StaticBody3D/Spawn")
 
 [node name="Player" parent="." unique_id=532005981 instance=ExtResource("2_kldst")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="Tower" parent="." unique_id=1388623405 instance=ExtResource("3_b2bpf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -7.234)
-BulletScene = ExtResource("5_7lihs")
 
 [editable path="Platform"]
 [editable path="Platform/Spawner"]
