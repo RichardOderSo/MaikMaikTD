@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dpdakci2by0mx"]
 
-[ext_resource type="Script" uid="uid://dj2keydrdd8q6" path="res://Scripts/Entities/Monster1.cs" id="1_2ugxc"]
+[ext_resource type="Script" uid="uid://dj2keydrdd8q6" path="res://Scripts/Entities/Monster.cs" id="1_2ugxc"]
 [ext_resource type="Script" uid="uid://lsluamosce48" path="res://Scripts/Entities/Components/Health.cs" id="2_4ods0"]
 [ext_resource type="Script" uid="uid://bar4pcmjnqu3h" path="res://Scripts/Entities/Components/Attacks/PokeAttack.cs" id="3_lur63"]
 

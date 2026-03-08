@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dmq0wvwkr7orh" path="res://Scenes/Entities/Player.tscn" id="2_kldst"]
 [ext_resource type="PackedScene" uid="uid://doowbeiaptsu8" path="res://Scenes/Entities/Tower.tscn" id="3_b2bpf"]
-[ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster_1.tscn" id="4_kldst"]
+[ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster.tscn" id="4_kldst"]
 [ext_resource type="PackedScene" uid="uid://b3jn5e61rcgbt" path="res://Scenes/World/World_Improvement.tscn" id="5_b2bpf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j5yw3"]
