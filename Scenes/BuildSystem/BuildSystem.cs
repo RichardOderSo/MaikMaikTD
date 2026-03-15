@@ -79,11 +79,15 @@ public partial class BuildSystem : Node3D
 
     }
 
+    // Creates the ghost object
 	void CreatePreview()
 	{
 		if(BuildingScene == null) return;
 
+        // instantiate a copy of the building scene
 		_previewInstance = BuildingScene.Instantiate<Node3D>();
+
+        // Adds the preview to the tree
 		AddChild( _previewInstance );
 
 		MakePreviewTransparent(_previewInstance );
@@ -119,6 +123,7 @@ public partial class BuildSystem : Node3D
 
             // material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
 
+            // Overrides material of the copy
             meshInstance.MaterialOverride = material;
         }
     }
