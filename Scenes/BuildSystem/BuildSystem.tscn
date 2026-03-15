@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://d141acqhpr3gj"]
+
+[ext_resource type="Script" uid="uid://c5at8guldrx48" path="res://Scenes/BuildSystem/BuildSystem.cs" id="1_l3b4s"]
+
+[node name="BuildSystem" type="Node3D" unique_id=1377094470]
+script = ExtResource("1_l3b4s")
