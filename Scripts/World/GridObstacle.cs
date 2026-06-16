@@ -9,12 +9,16 @@ public partial class GridObstacle : Node3D
     public bool IsBreakable { get; set; } = true;
 
     [Export]
-    public NodePath HealthPath { get; set; }
+    public NodePath HealthPath { get; set; } = new NodePath("");
 
     [Export]
     public GridManager Grid { get; set; }
 
-    public Vector2I RegisteredOriginCell { get; set; }
+    [Export]
+    public bool IsEnabled { get; set; } = true;
+
+    public Vector3I RegisteredOriginCell { get; set; }
+    public bool IsRegistered { get; private set; }
 
     private Health _health;
     private Node3D _obstacleRoot;
@@ -24,7 +28,6 @@ public partial class GridObstacle : Node3D
     public override void _Ready()
     {
         _obstacleRoot = GetParent<Node3D>() ?? this;
-        GlobalPosition = _obstacleRoot.GlobalPosition;
 
         Grid ??= GridManager.Instance ?? FindGridManager();
         _health = ResolveHealth();
@@ -34,15 +37,39 @@ public partial class GridObstacle : Node3D
             _health.HealthDepleted += OnHealthDepleted;
         }
 
-        if (Grid != null && !Grid.RegisterObstacle(this))
+        if (IsEnabled)
+        {
+            Register();
+        }
+    }
+
+    public void Register()
+    {
+        if (IsRegistered || Grid == null) return;
+
+        _obstacleRoot ??= GetParent<Node3D>() ?? this;
+        GlobalPosition = _obstacleRoot.GlobalPosition;
+        if (Grid.RegisterObstacle(this))
+        {
+            IsRegistered = true;
+        }
+        else
         {
             GD.PrintErr($"{Name} could not register on the grid at {GlobalPosition}.");
         }
     }
 
+    public void Unregister()
+    {
+        if (!IsRegistered || Grid == null) return;
+
+        Grid.UnregisterObstacle(this);
+        IsRegistered = false;
+    }
+
     public override void _ExitTree()
     {
-        Grid?.UnregisterObstacle(this);
+        Unregister();
     }
 
     public void ApplyDamage(int amount)
@@ -57,10 +84,12 @@ public partial class GridObstacle : Node3D
 
     private Health ResolveHealth()
     {
-        if (!HealthPath.IsEmpty)
+        if (HealthPath != null && !HealthPath.IsEmpty)
         {
             return GetNodeOrNull<Health>(HealthPath);
         }
+
+        if (_obstacleRoot == null) return null;
 
         return _obstacleRoot.GetNodeOrNull<Health>("Health") ?? _obstacleRoot.FindChild("Health", true, false) as Health;
     }

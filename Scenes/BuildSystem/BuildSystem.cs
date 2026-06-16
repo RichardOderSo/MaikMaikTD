@@ -94,21 +94,26 @@ public partial class BuildSystem : Node3D
 
         // Get position of hit
         Vector3 pos = (Vector3)result["position"];
+        Vector3 normal = (Vector3)result["normal"];
+
+        // Nudge the position slightly into the empty space to ensure we snap to the correct cell
+        Vector3 nudgePos = pos + normal * (Grid != null ? Grid.CellSize * 0.1f : 0.1f);
 
         // Place on grid
         if (Grid != null)
         {
-            pos = Grid.SnapWorldPosition(pos);
-            _canPlaceCurrentPreview = Grid.CanPlaceObstacle(Grid.WorldToCell(pos), BuildingCellSize);
+            currentBuildPosition = Grid.SnapWorldPosition(nudgePos);
+            _canPlaceCurrentPreview = Grid.CanPlaceObstacle(Grid.WorldToCell(currentBuildPosition), BuildingCellSize);
         }
         else
         {
+            pos = nudgePos;
             pos.X = Mathf.Round(pos.X / GridSize) * GridSize;
+            pos.Y = Mathf.Round(pos.Y / GridSize) * GridSize;
             pos.Z = Mathf.Round(pos.Z / GridSize) * GridSize;
+            currentBuildPosition = pos;
             _canPlaceCurrentPreview = true;
         }
-
-        currentBuildPosition = pos;
 
     }
 
@@ -122,6 +127,9 @@ public partial class BuildSystem : Node3D
 
         // Adds the preview to the tree
 		AddChild( _previewInstance );
+        
+        // Ensure it doesn't inherit parent transform if we are setting GlobalPosition
+        _previewInstance.TopLevel = true;
 
 		MakePreviewTransparent(_previewInstance );
 		DisablePreviewCollisions(_previewInstance );
@@ -135,21 +143,22 @@ public partial class BuildSystem : Node3D
         if (!_canPlaceCurrentPreview)
             return;
 
-        var fence = BuildingScene.Instantiate<Node3D>();
-        BuildingsParent.AddChild(fence);
-        fence.GlobalPosition = Grid != null ? Grid.SnapWorldPosition(currentBuildPosition) : currentBuildPosition;
+        var building = BuildingScene.Instantiate<Node3D>();
+        
+        BuildingsParent.AddChild(building);
+        building.GlobalPosition = currentBuildPosition;
 
         if (Grid != null)
         {
-            Vector2I cell = Grid.WorldToCell(fence.GlobalPosition);
+            Vector3I cell = Grid.WorldToCell(building.GlobalPosition);
             if (!Grid.CanPlaceObstacle(cell, BuildingCellSize))
             {
-                fence.QueueFree();
+                building.QueueFree();
                 return;
             }
         }
 
-        EnsureBreakableGridObstacle(fence);
+        EnsureBreakableGridObstacle(building);
     }
 
     private void EnsureBreakableGridObstacle(Node3D building)
@@ -165,7 +174,7 @@ public partial class BuildSystem : Node3D
         health.ChangeMaxHealth(BuildingHealth);
         health.ResetToMaxHealth();
 
-        GridObstacle obstacle = building.GetNodeOrNull<GridObstacle>("GridObstacle");
+        GridObstacle obstacle = building.GetNodeOrNull<GridObstacle>("GridObstacle") ?? building.FindChild("GridObstacle", true, false) as GridObstacle;
         if (obstacle == null)
         {
             obstacle = new GridObstacle();
@@ -174,12 +183,15 @@ public partial class BuildSystem : Node3D
             obstacle.CellSize = BuildingCellSize;
             obstacle.IsBreakable = true;
             building.AddChild(obstacle);
-            return;
         }
-
-        obstacle.Grid = Grid;
-        obstacle.CellSize = BuildingCellSize;
-        obstacle.IsBreakable = true;
+        else
+        {
+            obstacle.Grid = Grid;
+            obstacle.CellSize = BuildingCellSize;
+            obstacle.IsBreakable = true;
+            // Force register if it was already in the scene but failed/deferred
+            obstacle.Register();
+        }
     }
 
     void MakePreviewTransparent(Node node)
@@ -217,6 +229,11 @@ public partial class BuildSystem : Node3D
         {
             collisionObject.CollisionLayer = 0;
             collisionObject.CollisionMask = 0;
+        }
+
+        if (node is GridObstacle obstacle)
+        {
+            obstacle.IsEnabled = false;
         }
     }
 

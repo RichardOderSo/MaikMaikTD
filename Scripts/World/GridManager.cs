@@ -10,12 +10,15 @@ public partial class GridManager : Node3D
     public float CellSize { get; set; } = 1.0f;
 
     [Export]
+    public float VerticalCellSize { get; set; } = 1.0f;
+
+    [Export]
     public Vector2I HalfExtents { get; set; } = new Vector2I(50, 50);
 
     [Export]
     public bool AllowDiagonalMovement { get; set; } = false;
 
-    private readonly Dictionary<Vector2I, GridObstacle> _obstacles = new();
+    private readonly Dictionary<Vector3I, GridObstacle> _obstacles = new();
 
     private static readonly Vector2I[] CardinalDirections =
     {
@@ -46,39 +49,40 @@ public partial class GridManager : Node3D
         }
     }
 
-    public Vector2I WorldToCell(Vector3 worldPosition)
+    public Vector3I WorldToCell(Vector3 worldPosition)
     {
         Vector3 local = worldPosition - GlobalPosition;
-        return new Vector2I(
+        return new Vector3I(
             Mathf.RoundToInt(local.X / CellSize),
+            Mathf.RoundToInt(local.Y / VerticalCellSize),
             Mathf.RoundToInt(local.Z / CellSize));
     }
 
-    public Vector3 CellToWorld(Vector2I cell, float y = 0.0f)
+    public Vector3 CellToWorld(Vector3I cell)
     {
         return new Vector3(
             GlobalPosition.X + cell.X * CellSize,
-            y,
-            GlobalPosition.Z + cell.Y * CellSize);
+            GlobalPosition.Y + cell.Y * VerticalCellSize,
+            GlobalPosition.Z + cell.Z * CellSize);
     }
 
     public Vector3 SnapWorldPosition(Vector3 worldPosition)
     {
-        Vector2I cell = WorldToCell(worldPosition);
-        return CellToWorld(cell, worldPosition.Y);
+        Vector3I cell = WorldToCell(worldPosition);
+        return CellToWorld(cell);
     }
 
-    public bool IsCellInside(Vector2I cell)
+    public bool IsCellInside(Vector3I cell)
     {
         return cell.X >= -HalfExtents.X
             && cell.X <= HalfExtents.X
-            && cell.Y >= -HalfExtents.Y
-            && cell.Y <= HalfExtents.Y;
+            && cell.Z >= -HalfExtents.Y
+            && cell.Z <= HalfExtents.Y;
     }
 
-    public bool CanPlaceObstacle(Vector2I originCell, Vector2I size)
+    public bool CanPlaceObstacle(Vector3I originCell, Vector2I size)
     {
-        foreach (Vector2I cell in GetOccupiedCells(originCell, size))
+        foreach (Vector3I cell in GetOccupiedCells(originCell, size))
         {
             if (!IsCellInside(cell) || _obstacles.ContainsKey(cell))
             {
@@ -96,13 +100,13 @@ public partial class GridManager : Node3D
             return false;
         }
 
-        Vector2I originCell = WorldToCell(obstacle.GlobalPosition);
+        Vector3I originCell = WorldToCell(obstacle.GlobalPosition);
         if (!CanPlaceObstacle(originCell, obstacle.CellSize))
         {
             return false;
         }
 
-        foreach (Vector2I cell in GetOccupiedCells(originCell, obstacle.CellSize))
+        foreach (Vector3I cell in GetOccupiedCells(originCell, obstacle.CellSize))
         {
             _obstacles[cell] = obstacle;
         }
@@ -118,8 +122,8 @@ public partial class GridManager : Node3D
             return;
         }
 
-        List<Vector2I> toRemove = new();
-        foreach (KeyValuePair<Vector2I, GridObstacle> entry in _obstacles)
+        List<Vector3I> toRemove = new();
+        foreach (KeyValuePair<Vector3I, GridObstacle> entry in _obstacles)
         {
             if (entry.Value == obstacle)
             {
@@ -127,13 +131,13 @@ public partial class GridManager : Node3D
             }
         }
 
-        foreach (Vector2I cell in toRemove)
+        foreach (Vector3I cell in toRemove)
         {
             _obstacles.Remove(cell);
         }
     }
 
-    public GridObstacle GetObstacleAt(Vector2I cell)
+    public GridObstacle GetObstacleAt(Vector3I cell)
     {
         _obstacles.TryGetValue(cell, out GridObstacle obstacle);
         return obstacle;
@@ -145,9 +149,9 @@ public partial class GridManager : Node3D
         float obstacleHealthCostScale,
         out List<Vector3> path)
     {
-        Vector2I start = WorldToCell(startWorld);
-        Vector2I target = WorldToCell(targetWorld);
-        List<Vector2I> cellPath = FindCellPath(start, target, Mathf.Max(0.0f, obstacleHealthCostScale));
+        Vector3I start = WorldToCell(startWorld);
+        Vector3I target = WorldToCell(targetWorld);
+        List<Vector3I> cellPath = FindCellPath(start, target, Mathf.Max(0.0f, obstacleHealthCostScale));
 
         path = new List<Vector3>();
         if (cellPath.Count == 0)
@@ -155,25 +159,24 @@ public partial class GridManager : Node3D
             return false;
         }
 
-        float y = startWorld.Y;
         for (int i = 1; i < cellPath.Count; i++)
         {
-            path.Add(CellToWorld(cellPath[i], y));
+            path.Add(CellToWorld(cellPath[i]));
         }
 
         return true;
     }
 
-    private List<Vector2I> FindCellPath(Vector2I start, Vector2I target, float obstacleHealthCostScale)
+    private List<Vector3I> FindCellPath(Vector3I start, Vector3I target, float obstacleHealthCostScale)
     {
         if (!IsCellInside(start) || !IsCellInside(target))
         {
-            return new List<Vector2I>();
+            return new List<Vector3I>();
         }
 
-        PriorityQueue<Vector2I, float> openSet = new();
-        Dictionary<Vector2I, Vector2I> cameFrom = new();
-        Dictionary<Vector2I, float> costSoFar = new()
+        PriorityQueue<Vector3I, float> openSet = new();
+        Dictionary<Vector3I, Vector3I> cameFrom = new();
+        Dictionary<Vector3I, float> costSoFar = new()
         {
             [start] = 0.0f,
         };
@@ -182,13 +185,13 @@ public partial class GridManager : Node3D
 
         while (openSet.Count > 0)
         {
-            Vector2I current = openSet.Dequeue();
+            Vector3I current = openSet.Dequeue();
             if (current == target)
             {
                 return ReconstructPath(cameFrom, current);
             }
 
-            foreach (Vector2I next in GetNeighbors(current))
+            foreach (Vector3I next in GetNeighbors(current))
             {
                 if (!IsCellInside(next))
                 {
@@ -211,14 +214,14 @@ public partial class GridManager : Node3D
             }
         }
 
-        return new List<Vector2I>();
+        return new List<Vector3I>();
     }
 
-    private IEnumerable<Vector2I> GetNeighbors(Vector2I cell)
+    private IEnumerable<Vector3I> GetNeighbors(Vector3I cell)
     {
         foreach (Vector2I direction in CardinalDirections)
         {
-            yield return cell + direction;
+            yield return cell + new Vector3I(direction.X, 0, direction.Y);
         }
 
         if (!AllowDiagonalMovement)
@@ -228,20 +231,20 @@ public partial class GridManager : Node3D
 
         foreach (Vector2I direction in DiagonalDirections)
         {
-            yield return cell + direction;
+            yield return cell + new Vector3I(direction.X, 0, direction.Y);
         }
     }
 
-    private IEnumerable<Vector2I> GetOccupiedCells(Vector2I originCell, Vector2I size)
+    private IEnumerable<Vector3I> GetOccupiedCells(Vector3I originCell, Vector2I size)
     {
         Vector2I safeSize = new(Mathf.Max(1, size.X), Mathf.Max(1, size.Y));
         Vector2I offset = new(safeSize.X / 2, safeSize.Y / 2);
 
         for (int x = 0; x < safeSize.X; x++)
         {
-            for (int y = 0; y < safeSize.Y; y++)
+            for (int z = 0; z < safeSize.Y; z++)
             {
-                yield return new Vector2I(originCell.X + x - offset.X, originCell.Y + y - offset.Y);
+                yield return new Vector3I(originCell.X + x - offset.X, originCell.Y, originCell.Z + z - offset.Y);
             }
         }
     }
@@ -256,22 +259,22 @@ public partial class GridManager : Node3D
         return Mathf.Max(0.0f, obstacle.CurrentHealth) * obstacleHealthCostScale;
     }
 
-    private float MoveCost(Vector2I from, Vector2I to)
+    private float MoveCost(Vector3I from, Vector3I to)
     {
-        return from.X != to.X && from.Y != to.Y ? 1.4142135f : 1.0f;
+        return from.X != to.X && from.Z != to.Z ? 1.4142135f : 1.0f;
     }
 
-    private float Heuristic(Vector2I from, Vector2I to)
+    private float Heuristic(Vector3I from, Vector3I to)
     {
         int dx = Mathf.Abs(from.X - to.X);
-        int dy = Mathf.Abs(from.Y - to.Y);
-        return AllowDiagonalMovement ? Mathf.Max(dx, dy) : dx + dy;
+        int dz = Mathf.Abs(from.Z - to.Z);
+        return AllowDiagonalMovement ? Mathf.Max(dx, dz) : dx + dz;
     }
 
-    private List<Vector2I> ReconstructPath(Dictionary<Vector2I, Vector2I> cameFrom, Vector2I current)
+    private List<Vector3I> ReconstructPath(Dictionary<Vector3I, Vector3I> cameFrom, Vector3I current)
     {
-        List<Vector2I> path = new() { current };
-        while (cameFrom.TryGetValue(current, out Vector2I previous))
+        List<Vector3I> path = new() { current };
+        while (cameFrom.TryGetValue(current, out Vector3I previous))
         {
             current = previous;
             path.Add(current);
