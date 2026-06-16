@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://d141acqhpr3gj" path="res://Scenes/BuildSystem/BuildSystem.tscn" id="5_7lihs"]
 [ext_resource type="PackedScene" uid="uid://b3jn5e61rcgbt" path="res://Scenes/World/World_Improvement.tscn" id="5_b2bpf"]
 [ext_resource type="PackedScene" uid="uid://03n36w8s6rne" path="res://Assets/Debug/Cube.tscn" id="6_fgofq"]
+[ext_resource type="Script" path="res://Scripts/World/GridManager.cs" id="7_grid"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j5yw3"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -21,6 +22,11 @@ tonemap_mode = 2
 glow_enabled = true
 
 [node name="Game" type="Node3D" unique_id=1992121116]
+
+[node name="GridManager" type="Node3D" parent="." unique_id=2026041201]
+script = ExtResource("7_grid")
+CellSize = 1.0
+HalfExtents = Vector2i(50, 50)
 
 [node name="Player" parent="." unique_id=532005981 instance=ExtResource("2_kldst")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10.080442)

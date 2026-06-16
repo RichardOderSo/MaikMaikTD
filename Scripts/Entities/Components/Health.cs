@@ -10,10 +10,16 @@ public partial class Health : Node {
     //chains default constructor needed by Godot to custom constructor 
     public Health(int maxHealth) : this() {MaxHealth = maxHealth;}
 
-    [Export]
+	[Export]
 	public int MaxHealth {get; protected set;}
     [Export]
 	public int CurrentHealth {get; protected set;}
+
+    public override void _Ready() {
+        if (MaxHealth > 0 && CurrentHealth <= 0) {
+            CurrentHealth = MaxHealth;
+        }
+    }
 
 	public void Heal(int amount) {
 		int health = CurrentHealth + amount;
@@ -28,5 +34,7 @@ public partial class Health : Node {
 	}
 
     public void ChangeMaxHealth(int amount) => MaxHealth = amount;
+
+    public void ResetToMaxHealth() => CurrentHealth = MaxHealth;
 
 }
