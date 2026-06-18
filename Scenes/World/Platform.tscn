@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://c3jotkn5x2q06"]
 
 [ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="1_pquxj"]
+[ext_resource type="PackedScene" uid="uid://cd1griojc04wh" path="res://Scenes/World/Spawner.tscn" id="2_1bluh"]
+[ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster.tscn" id="3_32xp7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5ajho"]
 size = Vector3(100, 0.1, 100)
@@ -8,15 +10,27 @@ size = Vector3(100, 0.1, 100)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8n7cf"]
 albedo_texture = ExtResource("1_pquxj")
 heightmap_scale = 3.2
-uv1_scale = Vector3(10, 10, 10)
-uv1_offset = Vector3(2.5, 0, 0)
+uv1_offset = Vector3(0.5, 0, 0.5)
+uv1_triplanar = true
 uv1_triplanar_sharpness = 0.84089553
+uv1_world_triplanar = true
+uv2_triplanar = true
+uv2_world_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_s8bxr"]
 material = SubResource("StandardMaterial3D_8n7cf")
 size = Vector3(100, 0.1, 100)
 
-[node name="Platform" type="Node3D" unique_id=674573646]
+[sub_resource type="BoxShape3D" id="BoxShape3D_kgmyr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_61fqv"]
+albedo_color = Color(0.24698552, 0.41838595, 0.18922368, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bpnvk"]
+material = SubResource("StandardMaterial3D_61fqv")
+
+[node name="Platform" type="NavigationRegion3D" unique_id=1778187079]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3843777, -0.51396656, -3.5494127)
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1295425531]
 collision_layer = 2
@@ -26,3 +40,66 @@ shape = SubResource("BoxShape3D_5ajho")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=330688770]
 mesh = SubResource("BoxMesh_s8bxr")
+
+[node name="Ground_Path" type="Node3D" parent="." unique_id=2103532449]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.28938198, 0, -1.7919818)
+
+[node name="Tile" type="Node3D" parent="Ground_Path" unique_id=1284807179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, -2.269374)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile" unique_id=1655033827]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile/StaticBody3D" unique_id=386325827]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_kgmyr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile/StaticBody3D" unique_id=1975545104]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_bpnvk")
+
+[node name="Tile2" type="Node3D" parent="Ground_Path" unique_id=1766986223]
+transform = Transform3D(-4.371139e-08, 0, 3, 0, 1, 0, -1, 0, -1.3113416e-07, 0, 0, -14.266799)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile2" unique_id=1626414771]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile2/StaticBody3D" unique_id=25830271]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_kgmyr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile2/StaticBody3D" unique_id=52167159]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_bpnvk")
+
+[node name="Tile3" type="Node3D" parent="Ground_Path" unique_id=1271963643]
+transform = Transform3D(-4.371139e-08, 0, 3, 0, 1, 0, -1, 0, -1.3113416e-07, -18.002544, 0, -14.266799)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile3" unique_id=121152046]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile3/StaticBody3D" unique_id=2128926017]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_kgmyr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile3/StaticBody3D" unique_id=1628698317]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_bpnvk")
+
+[node name="Tile4" type="Node3D" parent="Ground_Path" unique_id=835120278]
+transform = Transform3D(-4.371139e-08, 0, 3, 0, 1, 0, -1, 0, -1.3113416e-07, 17.980621, 0, -14.266799)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground_Path/Tile4" unique_id=829118472]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground_Path/Tile4/StaticBody3D" unique_id=727074370]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.944, 0)
+shape = SubResource("BoxShape3D_kgmyr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground_Path/Tile4/StaticBody3D" unique_id=1839933412]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, -2.9441738, 0)
+mesh = SubResource("BoxMesh_bpnvk")
+
+[node name="Spawner" parent="Ground_Path" unique_id=1344979708 instance=ExtResource("2_1bluh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.927519, 0, -14.538247)
+SpawnableEntity = ExtResource("3_32xp7")
+
+[node name="Spawner2" parent="Ground_Path" unique_id=1061127656 instance=ExtResource("2_1bluh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.975742, 0, -14.538247)
+SpawnableEntity = ExtResource("3_32xp7")
