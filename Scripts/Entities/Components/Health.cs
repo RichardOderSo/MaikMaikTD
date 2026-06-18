@@ -5,21 +5,21 @@ using System;
 public partial class Health : Node {
 	[Signal]
 	public delegate void HealthDepletedEventHandler();
-    
-    public Health() : base() {}
-    //chains default constructor needed by Godot to custom constructor 
-    public Health(int maxHealth) : this() {MaxHealth = maxHealth;}
+	
+	public Health() : base() {}
+	//chains default constructor needed by Godot to custom constructor 
+	public Health(int maxHealth) : this() {MaxHealth = maxHealth;}
 
 	[Export]
 	public int MaxHealth {get; protected set;}
-    [Export]
+	[Export]
 	public int CurrentHealth {get; protected set;}
 
-    public override void _Ready() {
-        if (MaxHealth > 0 && CurrentHealth <= 0) {
-            CurrentHealth = MaxHealth;
-        }
-    }
+	public override void _Ready() {
+		if (MaxHealth > 0 && CurrentHealth <= 0) {
+			CurrentHealth = MaxHealth;
+		}
+	}
 
 	public void Heal(int amount) {
 		int health = CurrentHealth + amount;
@@ -33,8 +33,8 @@ public partial class Health : Node {
 		if (CurrentHealth < 1) { EmitSignal(SignalName.HealthDepleted);}
 	}
 
-    public void ChangeMaxHealth(int amount) => MaxHealth = amount;
+	public void ChangeMaxHealth(int amount) => MaxHealth = amount;
 
-    public void ResetToMaxHealth() => CurrentHealth = MaxHealth;
+	public void ResetToMaxHealth() => CurrentHealth = MaxHealth;
 
 }
