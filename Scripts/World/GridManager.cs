@@ -49,6 +49,7 @@ public partial class GridManager : Node3D
         }
     }
 
+    // Converts world coordinates to grid cell indices
     public Vector3I WorldToCell(Vector3 worldPosition)
     {
         Vector3 local = worldPosition - GlobalPosition;
@@ -58,6 +59,7 @@ public partial class GridManager : Node3D
             Mathf.RoundToInt(local.Z / CellSize));
     }
 
+    // Converts grid cell indices back to world space
     public Vector3 CellToWorld(Vector3I cell)
     {
         return new Vector3(
@@ -66,12 +68,14 @@ public partial class GridManager : Node3D
             GlobalPosition.Z + cell.Z * CellSize);
     }
 
+    // Returns the center of the cell for any given world position
     public Vector3 SnapWorldPosition(Vector3 worldPosition)
     {
         Vector3I cell = WorldToCell(worldPosition);
         return CellToWorld(cell);
     }
 
+    // Bounds check to make sure buildings stay within the playable area
     public bool IsCellInside(Vector3I cell)
     {
         return cell.X >= -HalfExtents.X
@@ -84,15 +88,25 @@ public partial class GridManager : Node3D
     {
         foreach (Vector3I cell in GetOccupiedCells(originCell, size))
         {
-            if (!IsCellInside(cell) || _obstacles.ContainsKey(cell))
+            if (!IsCellInside(cell))
             {
                 return false;
+            }
+
+            // Simple check: don't allow stacking buildings on top of each other
+            foreach (var obstacleCell in _obstacles.Keys)
+            {
+                if (obstacleCell.X == cell.X && obstacleCell.Z == cell.Z)
+                {
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
+    // Records a building on the grid so monsters know to path around it
     public bool RegisterObstacle(GridObstacle obstacle)
     {
         if (obstacle == null)
@@ -122,6 +136,7 @@ public partial class GridManager : Node3D
             return;
         }
 
+        // Clean up all cells associated with this obstacle
         List<Vector3I> toRemove = new();
         foreach (KeyValuePair<Vector3I, GridObstacle> entry in _obstacles)
         {
@@ -143,6 +158,7 @@ public partial class GridManager : Node3D
         return obstacle;
     }
 
+    // Standard A* pathfinding for monsters
     public bool TryFindPath(
         Vector3 startWorld,
         Vector3 targetWorld,
@@ -159,6 +175,7 @@ public partial class GridManager : Node3D
             return false;
         }
 
+        // Convert cell results back to world coordinates for navigation
         for (int i = 1; i < cellPath.Count; i++)
         {
             path.Add(CellToWorld(cellPath[i]));
@@ -199,11 +216,13 @@ public partial class GridManager : Node3D
                 }
 
                 GridObstacle obstacle = GetObstacleAt(next);
+                // Unbreakable obstacles are true walls
                 if (obstacle != null && !obstacle.IsBreakable)
                 {
                     continue;
                 }
 
+                // Monsters can choose to break through buildings if the path is too long
                 float newCost = costSoFar[current] + MoveCost(current, next) + GetObstacleCost(obstacle, obstacleHealthCostScale);
                 if (!costSoFar.TryGetValue(next, out float existingCost) || newCost < existingCost)
                 {
@@ -235,6 +254,7 @@ public partial class GridManager : Node3D
         }
     }
 
+    // Returns all cells covered by a building of a certain size
     private IEnumerable<Vector3I> GetOccupiedCells(Vector3I originCell, Vector2I size)
     {
         Vector2I safeSize = new(Mathf.Max(1, size.X), Mathf.Max(1, size.Y));
@@ -256,11 +276,13 @@ public partial class GridManager : Node3D
             return 0.0f;
         }
 
+        // Higher health buildings are harder to break through, so monsters prefer going around them
         return Mathf.Max(0.0f, obstacle.CurrentHealth) * obstacleHealthCostScale;
     }
 
     private float MoveCost(Vector3I from, Vector3I to)
     {
+        // Pythagorean distance for diagonal movement (approx sqrt(2))
         return from.X != to.X && from.Z != to.Z ? 1.4142135f : 1.0f;
     }
 
@@ -268,6 +290,7 @@ public partial class GridManager : Node3D
     {
         int dx = Mathf.Abs(from.X - to.X);
         int dz = Mathf.Abs(from.Z - to.Z);
+        // Use Chebyshev for diagonals, Manhattan for cardinal-only
         return AllowDiagonalMovement ? Mathf.Max(dx, dz) : dx + dz;
     }
 

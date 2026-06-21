@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Monster1 : MonsterBase {
+public partial class Monster : MonsterBase {
 
 	PokeAttack _attack = null;
 

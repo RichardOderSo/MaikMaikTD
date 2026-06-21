@@ -5,8 +5,24 @@
 [ext_resource type="PackedScene" uid="uid://dpdakci2by0mx" path="res://Scenes/Entities/Monster.tscn" id="4_kldst"]
 [ext_resource type="PackedScene" uid="uid://d141acqhpr3gj" path="res://Scenes/BuildSystem/BuildSystem.tscn" id="5_7lihs"]
 [ext_resource type="PackedScene" uid="uid://b3jn5e61rcgbt" path="res://Scenes/World/World_Improvement.tscn" id="5_b2bpf"]
-[ext_resource type="PackedScene" uid="uid://03n36w8s6rne" path="res://Assets/Debug/Cube.tscn" id="6_fgofq"]
+[ext_resource type="Texture2D" uid="uid://cdgvk2ixaawyo" path="res://Assets/kenney_prototype_texture/Vector/texture_08.svg" id="5_dahhg"]
+[ext_resource type="Script" uid="uid://b2gcxeg0x3xjd" path="res://Scripts/World/BuildingData.cs" id="7_2irst"]
 [ext_resource type="Script" uid="uid://dkfcvfrpj5iug" path="res://Scripts/World/GridManager.cs" id="7_grid"]
+[ext_resource type="PackedScene" uid="uid://ig3ghiihraro" path="res://Scenes/World/Wooden_Fence.tscn" id="9_dahhg"]
+[ext_resource type="PackedScene" uid="uid://03n36w8s6rne" path="res://Assets/Debug/Cube.tscn" id="10_71axn"]
+[ext_resource type="PackedScene" uid="uid://bgge6dr11x515" path="res://Scenes/World/Archer_Tower.tscn" id="10_dahhg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3so38"]
+albedo_texture = ExtResource("5_dahhg")
+heightmap_scale = 3.2
+uv1_offset = Vector3(0.5, 0, 0.5)
+uv1_triplanar = true
+uv1_triplanar_sharpness = 0.84089553
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_3cx6b"]
+material = SubResource("StandardMaterial3D_3so38")
+size = Vector3(100, 0.1, 100)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j5yw3"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -20,6 +36,27 @@ background_mode = 2
 sky = SubResource("Sky_kldst")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="Resource" id="Resource_71axn"]
+script = ExtResource("7_2irst")
+Name = "Fence"
+Scene = ExtResource("9_dahhg")
+CellSize = Vector2i(12, 1)
+IsFence = true
+metadata/_custom_type_script = "uid://b2gcxeg0x3xjd"
+
+[sub_resource type="Resource" id="Resource_dahhg"]
+script = ExtResource("7_2irst")
+Name = "Archer Tower"
+Scene = ExtResource("10_dahhg")
+metadata/_custom_type_script = "uid://b2gcxeg0x3xjd"
+
+[sub_resource type="Resource" id="Resource_3so38"]
+script = ExtResource("7_2irst")
+Name = "Cube"
+Scene = ExtResource("10_71axn")
+IsFence = true
+metadata/_custom_type_script = "uid://b2gcxeg0x3xjd"
 
 [node name="Game" type="Node3D" unique_id=1992121116]
 
@@ -38,6 +75,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.294884)
 [node name="Ground" parent="Level/Platform" parent_id_path=PackedInt32Array(1416840782, 674573646) index="0" unique_id=1295425531]
 collision_layer = 2
 
+[node name="MeshInstance3D" parent="Level/Platform/Ground" index="1" unique_id=330688770]
+mesh = SubResource("BoxMesh_3cx6b")
+
 [node name="Spawner" parent="Level/Platform/Ground_Path" parent_id_path=PackedInt32Array(1416840782, 956547847) index="4" unique_id=1344979708]
 SpawnableEntity = ExtResource("4_kldst")
 
@@ -54,7 +94,7 @@ shadow_enabled = true
 environment = SubResource("Environment_b2bpf")
 
 [node name="BuildSystem" parent="." unique_id=1377094470 node_paths=PackedStringArray("BuildingsParent") instance=ExtResource("5_7lihs")]
-BuildingScene = ExtResource("6_fgofq")
+Buildings = Array[ExtResource("7_2irst")]([SubResource("Resource_71axn"), SubResource("Resource_dahhg"), SubResource("Resource_3so38")])
 BuildingsParent = NodePath("../Buildings")
 BuildSurfaceCollisionMask = 3
 

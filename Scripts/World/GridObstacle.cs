@@ -25,6 +25,7 @@ public partial class GridObstacle : Node3D
 
     public int CurrentHealth => _health?.CurrentHealth ?? 0;
 
+    // Link the obstacle to its parent building and find the GridManager
     public override void _Ready()
     {
         _obstacleRoot = GetParent<Node3D>() ?? this;
@@ -43,6 +44,7 @@ public partial class GridObstacle : Node3D
         }
     }
 
+    // Attempt to claim space on the grid
     public void Register()
     {
         if (IsRegistered || Grid == null) return;
@@ -82,6 +84,7 @@ public partial class GridObstacle : Node3D
         _health.LoseHealth(amount);
     }
 
+    // Try to find a Health component nearby if none was assigned
     private Health ResolveHealth()
     {
         if (HealthPath != null && !HealthPath.IsEmpty)
@@ -99,6 +102,7 @@ public partial class GridObstacle : Node3D
         return GetTree().CurrentScene?.FindChild("GridManager", true, false) as GridManager;
     }
 
+    // When the building dies, free its space on the grid before destroying it
     private void OnHealthDepleted()
     {
         Grid?.UnregisterObstacle(this);

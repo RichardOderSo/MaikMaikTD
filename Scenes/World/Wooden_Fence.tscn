@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://ig3ghiihraro"]
+
+[ext_resource type="PackedScene" uid="uid://d3qymsqxg80uq" path="res://Assets/Low Poly/Structures/WoodenWall.fbx" id="1_bloyj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bw35y"]
+size = Vector3(1.3526733, 0.5129297, 0.1)
+
+[node name="WoodenFence" type="Node3D" unique_id=310139147]
+
+[node name="WoodenWall" parent="." unique_id=1034792968 instance=ExtResource("1_bloyj")]
+transform = Transform3D(-3.8772e-07, 0, 1, 0, 7.94, 0, -8.87, 0, -4.371139e-08, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WoodenWall" unique_id=1909361028]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WoodenWall/StaticBody3D" unique_id=132295895]
+transform = Transform3D(0.99999774, 0, 0, 0, 0.9999976, 0, -5.968559e-13, 0, 1, 0.00026650017, 0.25761005, 2.0733001e-08)
+shape = SubResource("BoxShape3D_bw35y")
