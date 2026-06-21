@@ -60,6 +60,7 @@ public partial class MonsterBase : CharacterBody3D
 
 	private void FollowPathfinding(double delta){
 		if (_pathfinding == null) {
+			GD.PrintErr("No pathfinding Found");
 			return;
 		}
 

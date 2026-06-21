@@ -94,21 +94,26 @@ public partial class BuildSystem : Node3D
 
 		// Get position of hit
 		Vector3 pos = (Vector3)result["position"];
+		Vector3 normal = (Vector3)result["normal"];
+
+		// Nudge the position slightly into the empty space to ensure we snap to the correct cell
+		Vector3 nudgePos = pos + normal * (Grid != null ? Grid.CellSize * 0.1f : 0.1f);
 
 		// Place on grid
 		if (Grid != null)
 		{
-			pos = Grid.SnapWorldPosition(pos);
-			_canPlaceCurrentPreview = Grid.CanPlaceObstacle(Grid.WorldToCell(pos), BuildingCellSize);
+			currentBuildPosition = Grid.SnapWorldPosition(nudgePos);
+			_canPlaceCurrentPreview = Grid.CanPlaceObstacle(Grid.WorldToCell(currentBuildPosition), BuildingCellSize);
 		}
 		else
 		{
+			pos = nudgePos;
 			pos.X = Mathf.Round(pos.X / GridSize) * GridSize;
+			pos.Y = Mathf.Round(pos.Y / GridSize) * GridSize;
 			pos.Z = Mathf.Round(pos.Z / GridSize) * GridSize;
+			currentBuildPosition = pos;
 			_canPlaceCurrentPreview = true;
 		}
-
-		currentBuildPosition = pos;
 
 	}
 
@@ -122,110 +127,122 @@ public partial class BuildSystem : Node3D
 
 		// Adds the preview to the tree
 		AddChild( _previewInstance );
+		
+		// Ensure it doesn't inherit parent transform if we are setting GlobalPosition
+        _previewInstance.TopLevel = true;
 
 		MakePreviewTransparent(_previewInstance );
 		DisablePreviewCollisions(_previewInstance );
 
 	}
-	public void PlaceObject()
-	{
-		if (BuildingScene == null || BuildingsParent == null)
-			return;
+    public void PlaceObject()
+    {
+        if (BuildingScene == null || BuildingsParent == null)
+            return;
 
-		if (!_canPlaceCurrentPreview)
-			return;
+        if (!_canPlaceCurrentPreview)
+            return;
 
-		var fence = BuildingScene.Instantiate<Node3D>();
-		BuildingsParent.AddChild(fence);
-		fence.GlobalPosition = Grid != null ? Grid.SnapWorldPosition(currentBuildPosition) : currentBuildPosition;
+        var building = BuildingScene.Instantiate<Node3D>();
+        
+        BuildingsParent.AddChild(building);
+        building.GlobalPosition = currentBuildPosition;
 
-		if (Grid != null)
-		{
-			Vector2I cell = Grid.WorldToCell(fence.GlobalPosition);
-			if (!Grid.CanPlaceObstacle(cell, BuildingCellSize))
-			{
-				fence.QueueFree();
-				return;
-			}
-		}
+        if (Grid != null)
+        {
+            Vector3I cell = Grid.WorldToCell(building.GlobalPosition);
+            if (!Grid.CanPlaceObstacle(cell, BuildingCellSize))
+            {
+                building.QueueFree();
+                return;
+            }
+        }
 
-		EnsureBreakableGridObstacle(fence);
-	}
+        EnsureBreakableGridObstacle(building);
+    }
 
-	private void EnsureBreakableGridObstacle(Node3D building)
-	{
-		Health health = building.GetNodeOrNull<Health>("Health");
-		if (health == null)
-		{
-			health = new Health();
-			health.Name = "Health";
-			building.AddChild(health);
-		}
+    private void EnsureBreakableGridObstacle(Node3D building)
+    {
+        Health health = building.GetNodeOrNull<Health>("Health");
+        if (health == null)
+        {
+            health = new Health();
+            health.Name = "Health";
+            building.AddChild(health);
+        }
 
-		health.ChangeMaxHealth(BuildingHealth);
-		health.ResetToMaxHealth();
+        health.ChangeMaxHealth(BuildingHealth);
+        health.ResetToMaxHealth();
 
-		GridObstacle obstacle = building.GetNodeOrNull<GridObstacle>("GridObstacle");
-		if (obstacle == null)
-		{
-			obstacle = new GridObstacle();
-			obstacle.Name = "GridObstacle";
-			obstacle.Grid = Grid;
-			obstacle.CellSize = BuildingCellSize;
-			obstacle.IsBreakable = true;
-			building.AddChild(obstacle);
-			return;
-		}
+        GridObstacle obstacle = building.GetNodeOrNull<GridObstacle>("GridObstacle") ?? building.FindChild("GridObstacle", true, false) as GridObstacle;
+        if (obstacle == null)
+        {
+            obstacle = new GridObstacle();
+            obstacle.Name = "GridObstacle";
+            obstacle.Grid = Grid;
+            obstacle.CellSize = BuildingCellSize;
+            obstacle.IsBreakable = true;
+            building.AddChild(obstacle);
+        }
+        else
+        {
+            obstacle.Grid = Grid;
+            obstacle.CellSize = BuildingCellSize;
+            obstacle.IsBreakable = true;
+            // Force register if it was already in the scene but failed/deferred
+            obstacle.Register();
+        }
+    }
 
-		obstacle.Grid = Grid;
-		obstacle.CellSize = BuildingCellSize;
-		obstacle.IsBreakable = true;
-	}
+    void MakePreviewTransparent(Node node)
+    {
+        foreach (Node child in node.GetChildren())
+        {
+            MakePreviewTransparent(child);
+        }
 
-	void MakePreviewTransparent(Node node)
-	{
-		foreach (Node child in node.GetChildren())
-		{
-			MakePreviewTransparent(child);
-		}
+        if (node is MeshInstance3D meshInstance)
+        {
+            var material = new StandardMaterial3D();
 
-		if (node is MeshInstance3D meshInstance)
-		{
-			var material = new StandardMaterial3D();
+            // transparent
+            material.AlbedoColor = new Color(1f, 1f, 1f, 0.5f);
 
-			// transparent
-			material.AlbedoColor = new Color(1f, 1f, 1f, 0.5f);
+            // activate transparency
+            material.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
 
-			// activate transparency
-			material.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
+            // material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
 
-			// material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+            // Overrides material of the copy
+            meshInstance.MaterialOverride = material;
+        }
+    }
 
-			// Overrides material of the copy
-			meshInstance.MaterialOverride = material;
-		}
-	}
+    void DisablePreviewCollisions(Node node)
+    {
+        foreach (Node child in node.GetChildren())
+        {
+            DisablePreviewCollisions(child);
+        }
 
-	void DisablePreviewCollisions(Node node)
-	{
-		foreach (Node child in node.GetChildren())
-		{
-			DisablePreviewCollisions(child);
-		}
+        if (node is CollisionObject3D collisionObject)
+        {
+            collisionObject.CollisionLayer = 0;
+            collisionObject.CollisionMask = 0;
+        }
 
-		if (node is CollisionObject3D collisionObject)
-		{
-			collisionObject.CollisionLayer = 0;
-			collisionObject.CollisionMask = 0;
-		}
-	}
+        if (node is GridObstacle obstacle)
+        {
+            obstacle.IsEnabled = false;
+        }
+    }
 
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		if (@event.IsActionPressed("build"))
-		{
-			PlaceObject();
-		}
-	}
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("build"))
+        {
+            PlaceObject();
+        }
+    }
 
 }

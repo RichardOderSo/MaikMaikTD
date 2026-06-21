@@ -10,12 +10,15 @@ public partial class GridManager : Node3D
 	public float CellSize { get; set; } = 1.0f;
 
 	[Export]
+	public float VerticalCellSize { get; set; } = 1.0f;
+
+	[Export]
 	public Vector2I HalfExtents { get; set; } = new Vector2I(50, 50);
 
 	[Export]
 	public bool AllowDiagonalMovement { get; set; } = false;
 
-	private readonly Dictionary<Vector2I, GridObstacle> _obstacles = new();
+	private readonly Dictionary<Vector3I, GridObstacle> _obstacles = new();
 
 	private static readonly Vector2I[] CardinalDirections =
 	{
@@ -46,39 +49,40 @@ public partial class GridManager : Node3D
 		}
 	}
 
-	public Vector2I WorldToCell(Vector3 worldPosition)
+	public Vector3I WorldToCell(Vector3 worldPosition, bool ignoreHeight = false)
 	{
 		Vector3 local = worldPosition - GlobalPosition;
-		return new Vector2I(
+		return new Vector3I(
 			Mathf.RoundToInt(local.X / CellSize),
+			ignoreHeight == true ? 0 : Mathf.RoundToInt(local.Y / VerticalCellSize),
 			Mathf.RoundToInt(local.Z / CellSize));
 	}
 
-	public Vector3 CellToWorld(Vector2I cell, float y = 0.0f)
+	public Vector3 CellToWorld(Vector3I cell, bool ignoreHeight = false)
 	{
 		return new Vector3(
 			GlobalPosition.X + cell.X * CellSize,
-			y,
-			GlobalPosition.Z + cell.Y * CellSize);
+			ignoreHeight == true ? 0 : GlobalPosition.Y + cell.Y * VerticalCellSize,
+			GlobalPosition.Z + cell.Z * CellSize);
 	}
 
 	public Vector3 SnapWorldPosition(Vector3 worldPosition)
 	{
-		Vector2I cell = WorldToCell(worldPosition);
-		return CellToWorld(cell, worldPosition.Y);
+		Vector3I cell = WorldToCell(worldPosition);
+		return CellToWorld(cell);
 	}
 
-	public bool IsCellInside(Vector2I cell)
+	public bool IsCellInside(Vector3I cell)
 	{
 		return cell.X >= -HalfExtents.X
 			&& cell.X <= HalfExtents.X
-			&& cell.Y >= -HalfExtents.Y
-			&& cell.Y <= HalfExtents.Y;
+			&& cell.Z >= -HalfExtents.Y
+			&& cell.Z <= HalfExtents.Y;
 	}
 
-	public bool CanPlaceObstacle(Vector2I originCell, Vector2I size)
+	public bool CanPlaceObstacle(Vector3I originCell, Vector2I size)
 	{
-		foreach (Vector2I cell in GetOccupiedCells(originCell, size))
+		foreach (Vector3I cell in GetOccupiedCells(originCell, size))
 		{
 			if (!IsCellInside(cell) || _obstacles.ContainsKey(cell))
 			{
@@ -96,13 +100,13 @@ public partial class GridManager : Node3D
 			return false;
 		}
 
-		Vector2I originCell = WorldToCell(obstacle.GlobalPosition);
+		Vector3I originCell = WorldToCell(obstacle.GlobalPosition);
 		if (!CanPlaceObstacle(originCell, obstacle.CellSize))
 		{
 			return false;
 		}
 
-		foreach (Vector2I cell in GetOccupiedCells(originCell, obstacle.CellSize))
+		foreach (Vector3I cell in GetOccupiedCells(originCell, obstacle.CellSize))
 		{
 			_obstacles[cell] = obstacle;
 		}
@@ -118,8 +122,8 @@ public partial class GridManager : Node3D
 			return;
 		}
 
-		List<Vector2I> toRemove = new();
-		foreach (KeyValuePair<Vector2I, GridObstacle> entry in _obstacles)
+		List<Vector3I> toRemove = new();
+		foreach (KeyValuePair<Vector3I, GridObstacle> entry in _obstacles)
 		{
 			if (entry.Value == obstacle)
 			{
@@ -127,23 +131,23 @@ public partial class GridManager : Node3D
 			}
 		}
 
-		foreach (Vector2I cell in toRemove)
+		foreach (Vector3I cell in toRemove)
 		{
 			_obstacles.Remove(cell);
 		}
 	}
 
-	public GridObstacle GetObstacleAt(Vector2I cell)
+	public GridObstacle GetObstacleAt(Vector3I cell)
 	{
 		_obstacles.TryGetValue(cell, out GridObstacle obstacle);
 		return obstacle;
 	}
 
-	public IEnumerable<Vector2I> GetNeighbors(Vector2I cell)
+	public IEnumerable<Vector3I> GetNeighbors(Vector3I cell)
 	{
 		foreach (Vector2I direction in CardinalDirections)
 		{
-			yield return cell + direction;
+			yield return cell + new Vector3I(direction.X, 0, direction.Y);
 		}
 
 		if (!AllowDiagonalMovement)
@@ -153,7 +157,7 @@ public partial class GridManager : Node3D
 
 		foreach (Vector2I direction in DiagonalDirections)
 		{
-			yield return cell + direction;
+			yield return cell + new Vector3I(direction.X, 0, direction.Y);
 		}
 	}
 
@@ -167,17 +171,18 @@ public partial class GridManager : Node3D
 		return Mathf.Max(0.0f, obstacle.CurrentHealth) * obstacleHealthCostScale;
 	}
 
-	private IEnumerable<Vector2I> GetOccupiedCells(Vector2I originCell, Vector2I size)
+	private IEnumerable<Vector3I> GetOccupiedCells(Vector3I originCell, Vector2I size)
 	{
 		Vector2I safeSize = new(Mathf.Max(1, size.X), Mathf.Max(1, size.Y));
 		Vector2I offset = new(safeSize.X / 2, safeSize.Y / 2);
 
 		for (int x = 0; x < safeSize.X; x++)
 		{
-			for (int y = 0; y < safeSize.Y; y++)
+			for (int z = 0; z < safeSize.Y; z++)
 			{
-				yield return new Vector2I(originCell.X + x - offset.X, originCell.Y + y - offset.Y);
+				yield return new Vector3I(originCell.X + x - offset.X, originCell.Y, originCell.Z + z - offset.Y);
 			}
 		}
 	}
+
 }
